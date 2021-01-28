@@ -167,7 +167,19 @@ public class DbTask {
             System.out.println("error");
         }
     }
-        
+    
+     public static void updateScore(String winner){
+        try {
+            PreparedStatement pst = con.prepareStatement("UPDATE players SET points = points+10  where username = ?");
+            pst.setString(1, winner);
+            pst.executeUpdate();
+            System.out.println("did it work dada");
+
+        } catch (Exception e) {
+            System.out.println("error");
+        }
+
+    }
     
 
 }

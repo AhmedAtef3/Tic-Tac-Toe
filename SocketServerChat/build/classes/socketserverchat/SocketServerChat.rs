@@ -1,2 +1,0 @@
-socketserverchat.ChatHandler
-socketserverchat.SocketServerChat

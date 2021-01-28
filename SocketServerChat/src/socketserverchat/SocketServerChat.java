@@ -5,7 +5,9 @@
  */
 package socketserverchat;
 
+import socketserverchat.Classes.Player;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import gameDB.DbTask;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -13,10 +15,12 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import socketserverchat.Classes.GameResponse;
 import socketserverchat.Classes.MyMessage;
-import socketserverchat.Classes.Player;
+import socketserverchat.Classes.Room;
 
 /**
  *
@@ -50,6 +54,11 @@ class ChatHandler extends Thread {
     DataInputStream dis;
     PrintStream ps;
     static ArrayList<ChatHandler> clientsArrayList = new ArrayList<>();
+    private GameResponse gameResponse;
+    private static int index;
+    private static int roomNumber;
+    private String[] cellItem = {"x", "o"};
+    private static ArrayList<Room> rooms = new ArrayList<>();
 
     public ChatHandler(Socket s) throws IOException {
         dis = new DataInputStream(s.getInputStream());
@@ -86,7 +95,6 @@ class ChatHandler extends Thread {
     }
 
     //To update the list of players 
-
     public void sendAllPlayers(String username, String flag) {
         this.userName = username;
         ArrayList<Player> players = DbTask.getAll(username);
@@ -146,6 +154,9 @@ class ChatHandler extends Thread {
 //                            ArrayList<Player> players = DbTask.getAll(idNumber);
 //                            ps.println(new Gson().toJson(players));
                             sendAllPlayers(p.getUsername(), "registered successfully");
+                            this.ps.println("myName");
+                            this.ps.println(this.userName);
+                            System.out.println("current user:" + this.userName);
                         } else {
                             this.ps.println("registration failed");
                         }
@@ -162,6 +173,9 @@ class ChatHandler extends Thread {
                 } else if (optionFlag.equals("accepted")) {
                     sendMessageToPlayer(str, "accept chat");
                     System.out.println(optionFlag);
+                    rooms.add(new Room(this.userName, str));
+                    //player one
+                    System.out.println("maybe player1" + str);
                     optionFlag = "";
                 } else if (str.equals("send message")) {
                     System.out.println("sent sent sent");
@@ -177,6 +191,30 @@ class ChatHandler extends Thread {
                     DbTask.updateOffLine(this.userName);
                     clientsArrayList.remove(this);
                     this.stop();
+                } else if (optionFlag.equals("map")) {
+                    System.out.println("wutt??");
+                    System.out.println(str);
+
+                    Gson gson = new Gson();
+                    GameResponse g1 = gson.fromJson(str, GameResponse.class);
+
+                    String[][] stringArr = g1.getArr();
+                    gameResponse = new GameResponse(stringArr, playerWon(stringArr), draw(stringArr), g1.getPlayer1(), "");
+
+                    //System.out.println("\n---------------------"+gameResponseJson+"\n---------------------------");
+                    sendToPlayers(this.userName, gameResponse);
+//                    gameinfoToSelf(gameResponseJson);
+//                    if(this.userName.equals(g1.getPlayer1())) {
+//                        sendMsg(g1.getPlayer2(), gameResponseJson);
+//                    }else if(this.userName.equals(g1.getPlayer2())){
+//                        sendMsg(g1.getPlayer1(), gameResponseJson);
+//                    }
+                    optionFlag = "";
+                } else if (str.equals("cell got clicked")) {
+                    System.out.println("+==++=");
+                    optionFlag = "map";
+                } else if (str.equals("help")) {
+                    this.ps.println("why");
                 }
 
             } catch (IOException ex) {
@@ -197,12 +235,12 @@ class ChatHandler extends Thread {
     void sendMessageToAll() {
         ArrayList<Player> players;
         for (ChatHandler ch : clientsArrayList) {
-            if (!ch.userName.equals(this.userName)) {
-                players = DbTask.getAll(ch.userName);
-                ch.ps.println("update player list");
-                ch.ps.println(new Gson().toJson(players));
-                System.out.println("sendUpdatedMessageToAll: " + new Gson().toJson(players));
-            }
+            //if (!ch.userName.equals(this.userName)) {
+            players = DbTask.getAll(ch.userName);
+            ch.ps.println("update player list");
+            ch.ps.println(new Gson().toJson(players));
+            System.out.println("sendUpdatedMessageToAll: " + new Gson().toJson(players));
+            //}
         }
     }
 
@@ -228,4 +266,110 @@ class ChatHandler extends Thread {
         }
 
     }
+
+    void sendToPlayers(String userName, GameResponse gameResponse) {
+        System.out.println("===========\nbefore the loop\n=========");
+
+        for (int i = 0; i < rooms.size(); i++) {
+            System.out.println(rooms.get(i) + "user name: " + userName);
+            if (rooms.get(i).getPlayer1().equals(userName) || rooms.get(i).getPlayer2().equals(userName)) {
+                gameResponse.setTurn(rooms.get(i).getItem());
+                Gson gson = new Gson();
+                String gameResponseJson = gson.toJson(gameResponse);
+                sendMsg(rooms.get(i).getPlayer2(), gameResponseJson);
+                System.out.println("------------------------------\ninside the loop\n------------------------");
+                sendMsg(rooms.get(i).getPlayer1(), gameResponseJson);
+                if (gameResponse.isGameOver()) {
+                    System.out.println("*****************\nis game over ???\n*****************");
+                    String winner = gameResponse.getTurn();
+                    if (winner.equals("x")) {
+                        System.out.println("x is the winner: " + rooms.get(i).getPlayer2());
+                        DbTask.updateScore(rooms.get(i).getPlayer2());
+
+                    } else {
+                        System.out.println("o is the winner" + rooms.get(i).getPlayer1());
+                        DbTask.updateScore(rooms.get(i).getPlayer1());
+
+                    }
+                    rooms.remove(i);
+                }
+            }
+        }
+    }
+
+    void sendMsg(String username, String gameResponseJson) {
+        System.out.println("are you getting called");
+        for (ChatHandler ch : clientsArrayList) {
+            if (ch.userName.equals(username)) {
+                ch.ps.println("update game");
+                ch.ps.println(gameResponseJson);
+            }
+
+        }
+
+    }
+
+    public void gameinfoToSelf(String gameJson) {
+        this.ps.println("update game");
+        this.ps.println(gameJson);
+    }
+
+public boolean playerWon(String[][] stringArr) {
+        boolean won = false;
+
+
+            //row
+
+            for (int i = 0; i < stringArr.length; i++) {
+                if (stringArr[i][0].equals(stringArr[i][1]) &&
+                        stringArr[i][0].equals(stringArr[i][2]) &&
+                        !stringArr[i][0].isEmpty()) {
+                    System.out.println("player:" + stringArr[i][0] + "won");
+                    won = true;
+                }
+            }
+            //column
+            for (int i = 0; i < stringArr.length; i++) {
+                if (stringArr[0][i].equals(stringArr[1][i]) &&
+                        stringArr[0][i].equals(stringArr[2][i]) &&
+                        !stringArr[0][i].isEmpty()) {
+                    System.out.println("player:" + stringArr[i][0] + "won");
+                    won = true;
+
+                }
+            }
+            //diagonal
+            if (stringArr[0][0].equals(stringArr[1][1]) &&
+                    stringArr[0][0].equals(stringArr[2][2]) && !stringArr[0][0].isEmpty()) {
+                System.out.println("player:" + stringArr[0][0] + "won");
+                won = true;
+            }
+            if (stringArr[0][2].equals(stringArr[1][1]) &&
+                    stringArr[0][2].equals(stringArr[2][0]) && !stringArr[0][2].isEmpty()) {
+                System.out.println("player:" + stringArr[0][0] + "won");
+                won = true;
+
+            }
+
+        return won;
+    }
+
+    public boolean draw(String stringArr[][]) {
+
+            for (int i = 0; i < stringArr.length; i++) {
+                for (int j = 0; j < stringArr[i].length; j++) {
+                    if (stringArr[i][j].isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+
+        System.out.println("test");
+        return true;
+    }
+    public String getItem(){
+
+        return cellItem[(index++) % (cellItem.length)];
+    }
+
 }
