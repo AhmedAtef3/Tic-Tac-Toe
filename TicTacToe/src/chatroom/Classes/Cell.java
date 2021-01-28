@@ -30,8 +30,10 @@ public class Cell extends StackPane {
 
         playerMove=new Text();
         cellRectangle.setFill(null);
-        cellRectangle.setStroke(Color.BLACK);
+        cellRectangle.setStroke(Color.WHITE);
         playerMove.setFont(Font.font(50));
+        playerMove.setFill(Color.WHITE);
+        
 
         this.getChildren().addAll(cellRectangle,playerMove);
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {

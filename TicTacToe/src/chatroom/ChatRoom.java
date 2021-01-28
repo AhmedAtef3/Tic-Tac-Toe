@@ -92,11 +92,13 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -217,7 +219,7 @@ public class ChatRoom extends Application {
                                     alertLabel.getScene().setRoot(requestPage(temp));
                                 }
                             });
-                            
+
                             System.out.println(str + "sent");
                             flagName = "";
                         } else if (str.equals("accept chat")) {
@@ -417,20 +419,17 @@ public class ChatRoom extends Application {
 
         Button loginButton = new Button("Sign in");
         grid.add(loginButton, 0, 19);
-        loginButton.setId("record-sales");
+        loginButton.setId("buttons");
         GridPane.setHalignment(loginButton, HPos.LEFT);
-//        loginButton.setMaxWidth(100);
+
         loginButton.setPrefSize(120, 30);
-//        loginButton.setMaxHeight(70);
 
         Button registerButton = new Button("Register");
         grid.add(registerButton, 1, 19);
-        registerButton.setId("record-sales");
+        registerButton.setId("buttons");
+
         GridPane.setHalignment(registerButton, HPos.RIGHT);
         registerButton.setPrefSize(120, 30);
-//        registerButton.setMaxWidth(100);
-//        registerButton.setMaxHeight(70);
-        //HBox hbBtn = new HBox(10);
 
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -448,9 +447,6 @@ public class ChatRoom extends Application {
 
         });
 
-//        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-//        hbBtn.getChildren().addAll(loginButton, registerButton);
-//        grid.add(hbBtn, 1, 12);
         return grid;
     }
 
@@ -463,74 +459,57 @@ public class ChatRoom extends Application {
     public GridPane register() {
         GridPane gridPane = new GridPane();
         gridPane.setId("pane");
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(25, 25, 25, 25));
+
         errorLabel = new Label("Invalid credentials");
         errorLabel.setTextFill(Color.RED);
         errorLabel.setVisible(false);
-        gridPane.setAlignment(Pos.CENTER);
-        //gridPane.setPadding(new Insets(40, 40, 40, 40));
+        GridPane.setHalignment(errorLabel, HPos.RIGHT);
+        gridPane.add(errorLabel, 1, 22);
 
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-
-        ColumnConstraints columnOneConstraints = new ColumnConstraints(100, 100, Double.MAX_VALUE);
-        columnOneConstraints.setHalignment(HPos.RIGHT);
-
-        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200, 200, Double.MAX_VALUE);
-        columnTwoConstrains.setHgrow(Priority.ALWAYS);
-
-        gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
-
-        //Header Location
-//        Label headerLabel = new Label("Registeration");
-//        headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-//        gridPane.add(headerLabel, 0, 0, 2, 1);
-//        GridPane.setHalignment(headerLabel, HPos.LEFT);
-//        GridPane.setMargin(headerLabel, new Insets(0, 0, 10, 0));
-        //add username
-//        Label username = new Label("USER Name ");
-//        gridPane.add(username, 0, 1);
-        // Add username field
         TextField usernameField = new TextField();
-        gridPane.add(usernameField, 0, 15);
-//        usernameField.setPrefHeight(40);
-//        gridPane.add(usernameField, 1, 1);
+        GridPane.setHalignment(usernameField, HPos.CENTER);
 
-        // Add nickname
-//        Label nickname = new Label("Nick Name ");
-//        gridPane.add(nickname, 0, 2);
-        // Add nickname field 
+        usernameField.setPromptText("Username");
+        GridPane.setColumnSpan(usernameField, 2);
+
+        gridPane.add(usernameField, 0, 19);
+        usernameField.setId("textField");
+
         TextField nicknameField = new TextField();
-        gridPane.add(nicknameField, 0, 16);
-//        nicknameField.setPrefHeight(40);
-//        gridPane.add(nicknameField, 1, 2);
 
-        // Add password
-//        Label password = new Label("password");
-//        gridPane.add(password, 0, 3);
-        // Add password field
+        GridPane.setHalignment(nicknameField, HPos.CENTER);
+
+        nicknameField.setPromptText("nickname");
+
+        gridPane.add(nicknameField, 0, 20);
+        nicknameField.setId("textField");
+        GridPane.setColumnSpan(nicknameField, 2);
+
         PasswordField passwordfield = new PasswordField();
-        gridPane.add(passwordfield, 0, 17);
-//        passwordfield.setPrefHeight(40);
-//        gridPane.add(passwordfield, 1, 3);
+        GridPane.setHalignment(passwordfield, HPos.CENTER);
+        GridPane.setColumnSpan(passwordfield, 2);
+        passwordfield.setPromptText("password");
+        gridPane.add(passwordfield, 0, 21);
+        passwordfield.setId("textField");
 
-        // Add register button
         Button RegisterButton = new Button("Register");
-        RegisterButton.setPrefHeight(40);
-        RegisterButton.setDefaultButton(true);
-        RegisterButton.setPrefWidth(100);
-        gridPane.add(RegisterButton, 0, 7, 1, 1);
-        GridPane.setMargin(RegisterButton, new Insets(20, 0, 20, 0));
 
-        //add back button
+        RegisterButton.setPrefSize(120, 30);
+        RegisterButton.setId("buttons");
+        GridPane.setHalignment(RegisterButton, HPos.LEFT);
+
+        gridPane.add(RegisterButton, 0, 23);
+
         final Button backButton = new Button("Back");
-        backButton.setPrefHeight(40);
-        backButton.setDefaultButton(true);
-        backButton.setPrefWidth(100);
-        gridPane.add(backButton, 1, 7, 1, 1);
-        GridPane.setMargin(backButton, new Insets(20, 0, 20, 0));
 
-        //Add label
-        gridPane.add(errorLabel, 1, 8);
+        backButton.setPrefSize(120, 30);
+        backButton.setId("buttons");
+        GridPane.setHalignment(backButton, HPos.RIGHT);
+        gridPane.add(backButton, 1, 23);
 
         backButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -619,7 +598,8 @@ public class ChatRoom extends Application {
         });
 
         // text 
-        Label headerLabel = new Label("let's play " + myUserName);
+//        Label headerLabel = new Label("let's play " + myUserName);
+ Label headerLabel = new Label("Welcome To The Game");
         headerLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 20));
         GridPane.setHalignment(headerLabel, HPos.CENTER);
         headerLabel.setId("main-title");
@@ -650,10 +630,10 @@ public class ChatRoom extends Application {
         hbox.setSpacing(10);
         //play button
         Button playButton = new Button("play");
-        playButton.setPrefHeight(40);
+        playButton.setPrefHeight(70);
         playButton.setDefaultButton(true);
-        playButton.setPrefWidth(100);
-        playButton.setId("record-sales");
+        playButton.setPrefWidth(130);
+        playButton.setId("buttons");
 
         playButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -688,7 +668,7 @@ public class ChatRoom extends Application {
         grid.add(headerLabel, 2, 2);
         grid.add(playerComboBox, 2, 10);
         grid.add(hbox, 2, 6);
-        grid.add(playButton, 9, 30);
+        grid.add(playButton, 10, 20);
         grid.add(alertLabel, 10, 50);
 
         return grid;
@@ -702,14 +682,27 @@ public class ChatRoom extends Application {
     public BorderPane playPage(String user) {
         textMessageArea = new TextArea();
         textMessageArea.setEditable(false);
+        textMessageArea.setPrefSize(300, 345);
+        AnchorPane chatPane = new AnchorPane();
+        BorderPane.setAlignment(chatPane, Pos.CENTER);
+        chatPane.setPrefSize(277, 400);
+
+        textMessageArea.setLayoutX(5);
+        textMessageArea.setLayoutY(5);
+        chatPane.getChildren().add(textMessageArea);
 
         TextField textField = new TextField();
-        textField.setMinWidth(200.0);
-        textField.setPrefWidth(300.0);
-        textField.setMaxWidth(350.0);
+//        textField.setPrefSize(200, 26);
+//        textField.setMinWidth(200.0);
+        textField.setPrefWidth(200.0);
+//        textField.setMaxWidth(350.0);
 
         Button sendButton = new Button("send");
+        sendButton.setPrefWidth(42);
+        sendButton.setId("buttons2");
         exitButton = new Button("exit");
+        exitButton.setPrefWidth(42);
+        exitButton.setId("buttons2");
 
         sendButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -739,14 +732,18 @@ public class ChatRoom extends Application {
         Insets insets = new Insets(20);
 
         //textArea.appendText(client.receivedMessage);
-        HBox hBox = new HBox(30, textField, sendButton, exitButton);
+        HBox hBox = new HBox(10, textField, sendButton, exitButton);
+
         BorderPane root = new BorderPane();
         root.setCenter(textMessageArea);
+        root.setId("left-borderPane");
         BorderPane.setMargin(textMessageArea, insets);
         root.setBottom(hBox);
         BorderPane.setMargin(hBox, insets);
         borderPane = new BorderPane();
+        borderPane.setId("second-pane");
         gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 Cell cell = new Cell(this);
@@ -756,6 +753,7 @@ public class ChatRoom extends Application {
         }
         borderPane.setCenter(gridPane);
         borderPane.setRight(root);
+//        borderPane.setCenter(chatPane); mmm
 
         return borderPane;
 
@@ -774,13 +772,23 @@ public class ChatRoom extends Application {
         gp.setHgap(10);
         gp.setVgap(10);
         gp.setPadding(new Insets(25, 25, 25, 25));
+        gp.setId("second-pane");
 
         Label notation = new Label(user + " wants to play with you, do you accept?");
+        notation.setId("main-title");
 
         //GridPane.setHalignment(notation, HPos.CENTER);
         Button acceptButton = new Button("accept");
         Button cancelButton = new Button("cancel");
 
+        acceptButton.setId("acceptbtn");
+        cancelButton.setId("acceptbtn");
+
+        acceptButton.setPrefHeight(40);
+        acceptButton.setPrefWidth(90);
+
+        cancelButton.setPrefHeight(40);
+        cancelButton.setPrefWidth(90);
         acceptButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -799,10 +807,20 @@ public class ChatRoom extends Application {
             }
         });
 
-        gp.add(notation, 2, 1, 3, 1);
-        gp.add(acceptButton, 2, 2);
-        gp.add(cancelButton, 4, 2);
+//        gp.add(notation, 2, 1, 3, 1);
+        GridPane.setHalignment(notation, HPos.CENTER);
+//          GridPane.setColumnSpan(notation, 2);
+        GridPane.setHalignment(acceptButton, HPos.CENTER);
+        GridPane.setHalignment(cancelButton, HPos.CENTER);
+        gp.add(notation, 0, 0);
+        HBox requestHBox = new HBox(10.0, acceptButton, cancelButton);
+        requestHBox.setAlignment(Pos.CENTER);
+//      gp.setGridLinesVisible(true);
+        GridPane.setHalignment(requestHBox, HPos.CENTER);
+        gp.add(requestHBox, 0, 1);
 
+//        gp.add(acceptButton, 0, 1);
+//        gp.add(cancelButton, 0, 1);
         return gp;
     }
 

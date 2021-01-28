@@ -17,7 +17,7 @@ and open the template in the editor.
 }
 
 #second-pane{
-    -fx-background-image: url("mai.jpg");
+    -fx-background-image: url("Backgroud2.jpg");
     -fx-background-repeat: stretch;   
     -fx-background-size: 900 506;
     -fx-background-position: center center;
@@ -41,7 +41,7 @@ and open the template in the editor.
     -fx-border-width:1;
 }
 #combo-box .arrow{
-    -fx-background-color:blue;
+    -fx-background-color:#dd4330;
 }
 #combo-box .arrow-button{
     -fx-background-color: white;
@@ -66,34 +66,73 @@ and open the template in the editor.
     -fx-font-size: 16pt;
 }
 
-#record-sales {
+#buttons {
     -fx-padding: 8 15 15 15;
     -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
     /*-fx-background-radius: 8;*/
     -fx-background-color: 
         /*linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),*/
         #dd4330;
-        /*#d86e3a,*/
-        /*radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);*/
+    /*#d86e3a,*/
+    /*radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);*/
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
     -fx-font-weight: bold;
     -fx-text-fill: white;
     -fx-font-size: 1.1em;
 }
 
-#record-sales:hover {
-    -fx-background-color: #a72b1b;
-/*        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
-        #9d4024,
-        #d86e3a,
-        radial-gradient(center 50% 50%, radius 100%, #ea7f4b, #c54e2c);*/
+
+
+#acceptbtn{
+    -fx-padding: 8 15 15 15;
+    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
+    /*-fx-background-radius: 8;*/
+    -fx-background-color: 
+        /*linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),*/
+        #dd4330;
+    /*#d86e3a,*/
+    /*radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);*/
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 1.1em;
+    -fx-border-radius: 50px; 
+    -fx-background-radius: 50px; 
+
 }
-#record-sales:pressed {
+
+#acceptbtn:hover {
+    -fx-background-color: #a72b1b;
+    /*        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
+            #9d4024,
+            #d86e3a,
+            radial-gradient(center 50% 50%, radius 100%, #ea7f4b, #c54e2c);*/
+}
+
+#acceptbtn:pressed {
+    -fx-padding: 10 15 13 15;
+    -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
+#acceptbtn Text {
+    -fx-fill: white;
+    -fx-effect: dropshadow( gaussian , #a30000 , 0,0,0,2 );
+}
+
+
+
+#buttons:hover {
+    -fx-background-color: #a72b1b;
+    /*        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
+            #9d4024,
+            #d86e3a,
+            radial-gradient(center 50% 50%, radius 100%, #ea7f4b, #c54e2c);*/
+}
+#buttons:pressed {
     -fx-padding: 10 15 13 15;
     -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
 }
 
-#record-sales Text {
+#buttons Text {
     -fx-fill: white;
     -fx-effect: dropshadow( gaussian , #a30000 , 0,0,0,2 );
 }
@@ -105,3 +144,18 @@ and open the template in the editor.
 
 
 
+#left-borderPane{ /*this is style class for Vbox */ /*something so similar: */ 
+    -fx-min-height:100px ;
+    -fx-max-height:750px ;
+    /*-fx-width:277px;*/
+    /*-fx-height:300px;*/
+    
+}
+
+
+#buttons2 {
+ 
+    -fx-background-color:  #dd4330;
+    -fx-text-fill:white;
+    
+}
