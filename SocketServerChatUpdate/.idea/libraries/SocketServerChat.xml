@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SocketServerChat">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/SocketServerChat.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
