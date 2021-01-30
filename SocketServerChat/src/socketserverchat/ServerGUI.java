@@ -44,6 +44,7 @@ public class ServerGUI extends Application {
         Button startButton = new Button("Start");
         Button stopButton = new Button("Stop");
         HBox buttons = new HBox(10, startButton, stopButton);
+        
         startButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
