@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import gameDB.DbTask;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -45,22 +46,18 @@ public class SocketServerChat {
     public ChatHandler getChatHandler() {
         return chatHandler;
     }
-    
+
     public static void stopServerSocket() {
         try {
             serverSocket.close();
+            ChatHandler.pauseAll();
         } catch (IOException ex) {
             Logger.getLogger(SocketServerChat.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void resumeServerSocket() {
-        try {
-            System.out.println("Accept is allowed again");
-            serverSocket.accept();
-        } catch (IOException ex) {
-            Logger.getLogger(SocketServerChat.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ChatHandler.resumeAll();
     }
 
     public SocketServerChat() throws IOException {
@@ -85,10 +82,12 @@ class ChatHandler extends Thread {
     private static int roomNumber;
     private String[] cellItem = {"x", "o"};
     private static ArrayList<Room> rooms = new ArrayList<>();
+    private Socket socket;
 
     public ChatHandler(Socket s) throws IOException {
         dis = new DataInputStream(s.getInputStream());
         ps = new PrintStream(s.getOutputStream());
+        socket = s;
         clientsArrayList.add(this);
         start();
     }
@@ -258,7 +257,25 @@ class ChatHandler extends Thread {
         }
     }
 
-    void sendMessageToAll() {
+    public static void pauseAll() {
+        for (ChatHandler ch : clientsArrayList) {
+            ch.ps.println("pause");
+            ch.suspend();
+        }
+    }
+                
+       
+    
+
+    
+
+    public static void resumeAll() {
+        for (ChatHandler ch : clientsArrayList) {
+            ch.resume();
+        }
+    }
+
+    public void sendMessageToAll() {
         ArrayList<Player> players;
         for (ChatHandler ch : clientsArrayList) {
             //if (!ch.userName.equals(this.userName)) {
@@ -340,60 +357,59 @@ class ChatHandler extends Thread {
         this.ps.println(gameJson);
     }
 
-public boolean playerWon(String[][] stringArr) {
+    public boolean playerWon(String[][] stringArr) {
         boolean won = false;
 
-
-            //row
-
-            for (int i = 0; i < stringArr.length; i++) {
-                if (stringArr[i][0].equals(stringArr[i][1]) &&
-                        stringArr[i][0].equals(stringArr[i][2]) &&
-                        !stringArr[i][0].isEmpty()) {
-                    System.out.println("player:" + stringArr[i][0] + "won");
-                    won = true;
-                }
-            }
-            //column
-            for (int i = 0; i < stringArr.length; i++) {
-                if (stringArr[0][i].equals(stringArr[1][i]) &&
-                        stringArr[0][i].equals(stringArr[2][i]) &&
-                        !stringArr[0][i].isEmpty()) {
-                    System.out.println("player:" + stringArr[i][0] + "won");
-                    won = true;
-
-                }
-            }
-            //diagonal
-            if (stringArr[0][0].equals(stringArr[1][1]) &&
-                    stringArr[0][0].equals(stringArr[2][2]) && !stringArr[0][0].isEmpty()) {
-                System.out.println("player:" + stringArr[0][0] + "won");
+        //row
+        for (int i = 0; i < stringArr.length; i++) {
+            if (stringArr[i][0].equals(stringArr[i][1])
+                    && stringArr[i][0].equals(stringArr[i][2])
+                    && !stringArr[i][0].isEmpty()) {
+                System.out.println("player:" + stringArr[i][0] + "won");
                 won = true;
             }
-            if (stringArr[0][2].equals(stringArr[1][1]) &&
-                    stringArr[0][2].equals(stringArr[2][0]) && !stringArr[0][2].isEmpty()) {
-                System.out.println("player:" + stringArr[0][0] + "won");
+        }
+        //column
+        for (int i = 0; i < stringArr.length; i++) {
+            if (stringArr[0][i].equals(stringArr[1][i])
+                    && stringArr[0][i].equals(stringArr[2][i])
+                    && !stringArr[0][i].isEmpty()) {
+                System.out.println("player:" + stringArr[i][0] + "won");
                 won = true;
 
             }
+        }
+        //diagonal
+        if (stringArr[0][0].equals(stringArr[1][1])
+                && stringArr[0][0].equals(stringArr[2][2]) && !stringArr[0][0].isEmpty()) {
+            System.out.println("player:" + stringArr[0][0] + "won");
+            won = true;
+        }
+        if (stringArr[0][2].equals(stringArr[1][1])
+                && stringArr[0][2].equals(stringArr[2][0]) && !stringArr[0][2].isEmpty()) {
+            System.out.println("player:" + stringArr[0][0] + "won");
+            won = true;
+
+        }
 
         return won;
     }
 
     public boolean draw(String stringArr[][]) {
 
-            for (int i = 0; i < stringArr.length; i++) {
-                for (int j = 0; j < stringArr[i].length; j++) {
-                    if (stringArr[i][j].isEmpty()) {
-                        return false;
-                    }
+        for (int i = 0; i < stringArr.length; i++) {
+            for (int j = 0; j < stringArr[i].length; j++) {
+                if (stringArr[i][j].isEmpty()) {
+                    return false;
                 }
             }
+        }
 
         System.out.println("test");
         return true;
     }
-    public String getItem(){
+
+    public String getItem() {
 
         return cellItem[(index++) % (cellItem.length)];
     }

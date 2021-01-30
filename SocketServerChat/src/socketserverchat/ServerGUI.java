@@ -51,7 +51,8 @@ public class ServerGUI extends Application {
                 if (firstStartServerFlag == false) {
                     firstStartServerFlag = true;
                     ServerSocketThread.setPressedButton("start");
-                    ServerSocketThread serverStart = new ServerSocketThread();                  
+                    ServerSocketThread serverStart = new ServerSocketThread();
+                    SocketServerChat.resumeServerSocket();
                     System.out.println("Thread: " + serverThread);
                 }
             }

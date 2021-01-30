@@ -189,180 +189,190 @@ public class ChatRoom extends Application {
                     String str = null;
                     try {
                         str = dis.readLine();
-                        System.out.println(str);
+                        if (str != null) {
+//                        System.out.println(str);
 
-                        if (str.equals("registration failed")) {
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    errorLabel.setVisible(true);
+                            if (str.equals("registration failed")) {
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        errorLabel.setVisible(true);
+                                    }
+                                });
+
+                                System.out.println("registraaation faaaaileeed");
+                            } else if (str.equals("login failed")) {
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        errorLabel.setVisible(true);
+                                    }
+                                });
+                                System.out.println("logiiin faaaaileeed");
+                            } else if (str.equals("login successfully")) {
+                                successfull = true;
+
+                            } else if (str.equals("registered successfully")) {
+                                System.out.println("hoss");
+                                successfull = true;
+                            } else if (str.equals("request chat")) {
+                                System.out.println("ana dkhlt hna");
+                                flagName = "request";
+
+                            } else if (flagName.equals("request")) {
+                                final String temp = str;
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        alertLabel.getScene().setRoot(requestPage(temp));
+                                    }
+                                });
+
+                                System.out.println(str + "sent");
+                                flagName = "";
+                            } else if (str.equals("accept chat")) {
+                                flagName = "accept";
+                            } else if (flagName.equals("accept")) {
+                                System.out.println("player " + str);
+                                final String playerName = str;
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        alertLabel.getScene().setRoot(playPage(playerName));
+                                    }
+                                });
+                                flagName = "";
+                            } else if (str.equals("text message")) {
+                                System.out.println("here " + str);
+                                flagName = "message";
+                            } else if (flagName.equals("message")) {
+                                System.out.println("mar7aba " + str);
+                                textMessageArea.appendText(str + "\n");
+                                flagName = "";
+                            } else if (successfull == true) {
+
+                                String json_string = str;
+                                System.out.println(json_string);
+                                Gson gson = new Gson();
+                                ArrayList<Player> players = new ArrayList<>();
+                                Type playerListType = new TypeToken<ArrayList<Player>>() {
+                                }.getType();
+                                playerList = gson.fromJson(json_string, playerListType);
+
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        errorLabel.getScene().setRoot(mainPage());
+                                    }
+
+                                });
+
+                                int i = 0;
+                                for (Player pp : playerList) {
+                                    System.out.println(pp.getUsername());
                                 }
-                            });
+                                successfull = false;
 
-                            System.out.println("registraaation faaaaileeed");
-                        } else if (str.equals("login failed")) {
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    errorLabel.setVisible(true);
-                                }
-                            });
-                            System.out.println("logiiin faaaaileeed");
-                        } else if (str.equals("login successfully")) {
-                            successfull = true;
+                            } else if (str.equals("update player list")) {
+                                flagName = "update player list";
+                                System.out.println("how many times?");
 
-                        } else if (str.equals("registered successfully")) {
-                            System.out.println("hoss");
-                            successfull = true;
-                        } else if (str.equals("request chat")) {
-                            System.out.println("ana dkhlt hna");
-                            flagName = "request";
+                            } else if (flagName.equals("update player list")) {
+                                Gson gson = new Gson();
 
-                        } else if (flagName.equals("request")) {
-                            final String temp = str;
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    alertLabel.getScene().setRoot(requestPage(temp));
-                                }
-                            });
+                                ArrayList<Player> players = new ArrayList<>();
+                                Type playerListType = new TypeToken<ArrayList<Player>>() {
+                                }.getType();
+                                System.out.println("before playerlist: " + str);
+                                playerList = gson.fromJson(str, playerListType);
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        System.out.println("combobox update");
+                                        if (playerComboBox != null) {
+                                            System.out.println("combo box update is not empty");
+                                            playerComboBox.getItems().clear();
 
-                            System.out.println(str + "sent");
-                            flagName = "";
-                        } else if (str.equals("accept chat")) {
-                            flagName = "accept";
-                        } else if (flagName.equals("accept")) {
-                            System.out.println("player " + str);
-                            final String playerName = str;
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    alertLabel.getScene().setRoot(playPage(playerName));
-                                }
-                            });
-                            flagName = "";
-                        } else if (str.equals("text message")) {
-                            System.out.println("here " + str);
-                            flagName = "message";
-                        } else if (flagName.equals("message")) {
-                            System.out.println("mar7aba " + str);
-                            textMessageArea.appendText(str + "\n");
-                            flagName = "";
-                        } else if (successfull == true) {
+                                            for (Player pp : playerList) {
+                                                playerComboBox.getItems().add(
+                                                        pp.getUsername() + "," + pp.getPoints() + "," + pp.getFlag()
+                                                );
+                                            }
 
-                            String json_string = str;
-                            System.out.println(json_string);
-                            Gson gson = new Gson();
-                            ArrayList<Player> players = new ArrayList<>();
-                            Type playerListType = new TypeToken<ArrayList<Player>>() {
-                            }.getType();
-                            playerList = gson.fromJson(json_string, playerListType);
+                                            playerComboBox.setValue("please choose one player");
 
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    errorLabel.getScene().setRoot(mainPage());
-                                }
-
-                            });
-
-                            int i = 0;
-                            for (Player pp : playerList) {
-                                System.out.println(pp.getUsername());
-                            }
-                            successfull = false;
-
-                        } else if (str.equals("update player list")) {
-                            flagName = "update player list";
-                            System.out.println("how many times?");
-
-                        } else if (flagName.equals("update player list")) {
-                            Gson gson = new Gson();
-
-                            ArrayList<Player> players = new ArrayList<>();
-                            Type playerListType = new TypeToken<ArrayList<Player>>() {
-                            }.getType();
-                            System.out.println("before playerlist: " + str);
-                            playerList = gson.fromJson(str, playerListType);
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    System.out.println("combobox update");
-                                    if (playerComboBox != null) {
-                                        System.out.println("combo box update is not empty");
-                                        playerComboBox.getItems().clear();
-                                        
-                                        for (Player pp : playerList) {
-                                            playerComboBox.getItems().add(
-                                                    pp.getUsername() + "," + pp.getPoints() + "," + pp.getFlag()
-                                            );
+                                            // Set the CellFactory property
+                                            playerComboBox.setCellFactory(new ShapeCellFactory());
+                                            // Set the ButtonCell property
+                                            playerComboBox.setButtonCell(new ShapeCell());
+                                            ////////////////////////////////////////////////
+                                            playerComboBox.setValue("please choose one player");
+                                            playerComboBox.setId(("combo-box"));
                                         }
-
-                                        playerComboBox.setValue("please choose one player");
-
-                                        // Set the CellFactory property
-                                        playerComboBox.setCellFactory(new ShapeCellFactory());
-                                        // Set the ButtonCell property
-                                        playerComboBox.setButtonCell(new ShapeCell());
-                                        ////////////////////////////////////////////////
-                                        playerComboBox.setValue("please choose one player");
-                                        playerComboBox.setId(("combo-box"));
                                     }
-                                }
 
-                            });
-                            System.out.println("update list: " + str);
-                            flagName = "";
-                        } else if (flagName.equals(
-                                "get map")) {
-                            Gson gson = new Gson();
+                                });
+                                System.out.println("update list: " + str);
+                                flagName = "";
+                            } else if (flagName.equals(
+                                    "get map")) {
+                                Gson gson = new Gson();
+                                System.out.println(str);
+                                GameResponse gameResponse = gson.fromJson(str, GameResponse.class);
+
+                                if (!gameResponse.getTurn().isEmpty()) {
+                                    turn = gameResponse.getTurn();
+                                    System.out.println("client" + gameResponse.getTurn());
+                                }
+                                String[][] stringArr = gameResponse.getArr();
+                                //test loop
+                                System.out.println("----------------------------------------------");
+                                for (int i = 0; i < 3; i++) {
+                                    for (int j = 0; j < 3; j++) {
+                                        System.out.print(stringArr[i][j] + ",");
+                                    }
+                                    System.out.println();
+                                }
+                                for (int i = 0; i < board.length; i++) {
+                                    for (int j = 0; j < board[i].length; j++) {
+                                        if (!stringArr[i][j].isEmpty()) {
+                                            board[i][j].getPlayerMove().setText(stringArr[i][j]);
+                                        }
+                                    }
+
+                                }
+                                if (gameResponse.isGameOver()) {
+                                    winMessage(gameResponse.getTurn());
+
+                                } else if (gameResponse.isDraw()) {
+
+                                    drawMessage();
+                                }
+                                flagName = "";
+                            } else if (str.equals("myName")) {
+                                flagName = "getName";
+                            } else if (flagName.equals("getName")) {
+                                myUserName = str;
+                                flagName = "";
+                            } else if (str.equals("update game")) {
+                                flagName = "get map";
+                            } else if (str.equals("pause")) {
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Alert alertActive = new Alert(AlertType.WARNING);
+                                        alertActive.setTitle("Warning Message");
+                                        alertActive.setHeaderText("Server is down now but your message will arrive as soon as server is back");
+                                        alertActive.showAndWait();
+                                    }
+                                });
+                            }
+
                             System.out.println(str);
-                            GameResponse gameResponse = gson.fromJson(str, GameResponse.class);
+                        } else {
+                            System.out.println("Server is down");
 
-                            if (!gameResponse.getTurn().isEmpty()) {
-                                turn = gameResponse.getTurn();
-                                System.out.println("client" + gameResponse.getTurn());
-                            }
-                            String[][] stringArr = gameResponse.getArr();
-                            //test loop
-                            System.out.println("----------------------------------------------");
-                            for (int i = 0; i < 3; i++) {
-                                for (int j = 0; j < 3; j++) {
-                                    System.out.print(stringArr[i][j] + ",");
-                                }
-                                System.out.println();
-                            }
-                            for (int i = 0; i < board.length; i++) {
-                                for (int j = 0; j < board[i].length; j++) {
-                                    if (!stringArr[i][j].isEmpty()) {
-                                        board[i][j].getPlayerMove().setText(stringArr[i][j]);
-                                    }
-                                }
-
-                            }
-                            if (gameResponse.isGameOver()) {
-                                winMessage(gameResponse.getTurn());
-
-                            } else if (gameResponse.isDraw()) {
-
-                                drawMessage();
-                            }
-                            flagName = "";
-                        } else if (str.equals(
-                                "myName")) {
-                            flagName = "getName";
-                        } else if (flagName.equals(
-                                "getName")) {
-                            myUserName = str;
-                            flagName = "";
-                        } else if (str.equals(
-                                "update game")) {
-
-                            flagName = "get map";
                         }
-
-                        System.out.println(str);
-
                     } catch (IOException ex) {
                         System.out.println("lina");
                     }
