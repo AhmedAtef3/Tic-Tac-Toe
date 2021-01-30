@@ -137,6 +137,7 @@ public class ChatRoom extends Application {
     TextArea textMessageArea;
     TextField loginUserTextField;
     PasswordField loginpwBox;
+    private String winner;
     Label labelTrial;
     ComboBox playerComboBox;
     Circle circle;
@@ -146,10 +147,12 @@ public class ChatRoom extends Application {
     private Button exitButton;
     private GridPane gridPane;
     private Cell[][] board = new Cell[3][3];
+    private String map[][];
     private String turn = "o";
     boolean isX;
     private String myUserName;
     private boolean playWithBot;
+    private boolean resumeGame;
 
     @Override
     public void start(Stage primaryStage) {
@@ -314,49 +317,49 @@ public class ChatRoom extends Application {
                                 });
                                 System.out.println("update list: " + str);
                                 flagName = "";
-                            } else if (flagName.equals(
-                                    "get map")) {
-                                Gson gson = new Gson();
-                                System.out.println(str);
-                                GameResponse gameResponse = gson.fromJson(str, GameResponse.class);
+                            } else if(flagName.equals("get map")){
+                            Gson gson=new Gson();
+                            System.out.println(str);
+                            GameResponse gameResponse=gson.fromJson(str,GameResponse.class);
 
-                                if (!gameResponse.getTurn().isEmpty()) {
-                                    turn = gameResponse.getTurn();
-                                    System.out.println("client" + gameResponse.getTurn());
+                            if(!gameResponse.getTurn().isEmpty()){
+                                turn=gameResponse.getTurn();
+                                System.out.println("client"+ gameResponse.getTurn());
+                            }
+                            String[][] stringArr = gameResponse.getArr();
+                            //test loop
+                            System.out.println("----------------------------------------------");
+                            for (int i = 0; i < 3; i++) {
+                                for (int j = 0; j < 3; j++) {
+                                    System.out.print(stringArr[i][j] + ",");
                                 }
-                                String[][] stringArr = gameResponse.getArr();
-                                //test loop
-                                System.out.println("----------------------------------------------");
-                                for (int i = 0; i < 3; i++) {
-                                    for (int j = 0; j < 3; j++) {
-                                        System.out.print(stringArr[i][j] + ",");
+                                System.out.println();
+                            }
+                            for (int i = 0; i < board.length; i++) {
+                                for (int j = 0; j < board[i].length; j++) {
+                                    if (!stringArr[i][j].isEmpty()) {
+                                        board[i][j].getPlayerMove().setText(stringArr[i][j]);
                                     }
-                                    System.out.println();
                                 }
-                                for (int i = 0; i < board.length; i++) {
-                                    for (int j = 0; j < board[i].length; j++) {
-                                        if (!stringArr[i][j].isEmpty()) {
-                                            board[i][j].getPlayerMove().setText(stringArr[i][j]);
-                                        }
-                                    }
 
-                                }
-                                if (gameResponse.isGameOver()) {
-                                    winMessage(gameResponse.getTurn());
+                            }
+                            if (gameResponse.isGameOver()) {
+                                winMessage(gameResponse.getTurn());
 
-                                } else if (gameResponse.isDraw()) {
+                            }else  if(gameResponse.isDraw()){
 
-                                    drawMessage();
-                                }
-                                flagName = "";
-                            } else if (str.equals("myName")) {
+                                drawMessage();
+                            }
+                            flagName="";
+                        }else if (str.equals("myName")) {
                                 flagName = "getName";
                             } else if (flagName.equals("getName")) {
                                 myUserName = str;
                                 flagName = "";
                             } else if (str.equals("update game")) {
                                 flagName = "get map";
-                            } else if (str.equals("pause")) {
+                            } 
+                            else if (str.equals("pause")) {
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
@@ -366,7 +369,15 @@ public class ChatRoom extends Application {
                                         alertActive.showAndWait();
                                     }
                                 });
-                            }
+                            } else if(str.equals("resume game")){
+                            flagName="res game";
+
+                        }else if(flagName.equals("res game")){
+                            Gson gson=new Gson();
+
+                            map=gson.fromJson(str,String[][].class);
+                           resumeGame=true;
+                        }
 
                             System.out.println(str);
                         } else {
@@ -733,9 +744,13 @@ public class ChatRoom extends Application {
                 if (playWithBot == false) {
                     ps.println("exit");
                     System.exit(0);
-                } else {
+                } else{
                     exitButton.getScene().setRoot(mainPage());
-                    playWithBot = false;
+                    ps.println("save map");
+                    Gson gson=new Gson();
+                   String map= gson.toJson(cellValues(),String[][].class);
+                    ps.println(map);
+                    playWithBot=false;
                 }
             }
         });
@@ -759,6 +774,16 @@ public class ChatRoom extends Application {
                 Cell cell = new Cell(this);
                 gridPane.add(cell, j, i);
                 board[i][j] = cell;
+            }
+        }
+        if(resumeGame){
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board[i].length; j++) {
+                    if (map!=null) {
+                        board[i][j].getPlayerMove().setText(map[i][j]);
+                    }
+                }
+
             }
         }
         borderPane.setCenter(gridPane);
@@ -822,9 +847,9 @@ public class ChatRoom extends Application {
         return gp;
     }
 
-    public void winMessage(String winner) {
+    public void winMessage(String whoWon) {
         String msg;
-        if (!winner.equals("x")) {
+        if (!whoWon.equals("x")) {
             msg = "O won!";
         } else {
             msg = "X won!";
@@ -862,7 +887,7 @@ public class ChatRoom extends Application {
                 gameEndAlert.setTitle("game ended");
                 gameEndAlert.setHeaderText("draw!");
                 gameEndAlert.showAndWait();
-
+                exitButton.getScene().setRoot(mainPage());
             }
 
         });
@@ -898,56 +923,60 @@ public class ChatRoom extends Application {
         return myUserName;
     }
 
-    public boolean playerWon() {
+    public boolean playerWon(){
         //row
-        boolean won = false;
-        for (int i = 0; i < board.length; i++) {
-            if (board[i][0].getPlayerMove().getText().equals(board[i][1].getPlayerMove().getText())
-                    && board[i][0].getPlayerMove().getText().equals(board[i][2].getPlayerMove().getText())
-                    && !board[i][0].getPlayerMove().getText().isEmpty()) {
-                System.out.println("player:" + board[i][0].getPlayerMove().getText() + "won");
-                won = true;
+        boolean won=false;
+        for(int i=0;i<board.length;i++ ){
+            if(board[i][0].getPlayerMove().getText().equals(board[i][1].getPlayerMove().getText()) &&
+                    board[i][0].getPlayerMove().getText().equals(board[i][2].getPlayerMove().getText())&&
+                    !board[i][0].getPlayerMove().getText().isEmpty()){
+                System.out.println("player:"+board[i][0].getPlayerMove().getText()+"won");
+                won=true;
+                winner=board[i][0].getPlayerMove().getText();
             }
         }
         //column
-        for (int i = 0; i < board.length; i++) {
-            if (board[0][i].getPlayerMove().getText().equals(board[1][i].getPlayerMove().getText())
-                    && board[0][i].getPlayerMove().getText().equals(board[2][i].getPlayerMove().getText())
-                    && !board[0][i].getPlayerMove().getText().isEmpty()) {
-                System.out.println("player:" + board[i][0].getPlayerMove().getText() + "won");
-                won = true;
-
+        for(int i=0;i<board.length;i++ ){
+            if(board[0][i].getPlayerMove().getText().equals(board[1][i].getPlayerMove().getText()) &&
+                    board[0][i].getPlayerMove().getText().equals(board[2][i].getPlayerMove().getText())&&
+                    !board[0][i].getPlayerMove().getText().isEmpty()){
+                System.out.println("player:"+board[i][0].getPlayerMove().getText()+"won");
+                won=true;
+                winner=board[0][i].getPlayerMove().getText();
             }
         }
         //diagonal
-        if (board[0][0].getPlayerMove().getText().equals(board[1][1].getPlayerMove().getText())
-                && board[0][0].getPlayerMove().getText().equals(board[2][2].getPlayerMove().getText()) && !board[0][0].getPlayerMove().getText().isEmpty()) {
-            System.out.println("player:" + board[0][0].getPlayerMove().getText() + "won");
-            won = true;
+        if(board[0][0].getPlayerMove().getText().equals(board[1][1].getPlayerMove().getText()) &&
+                board[0][0].getPlayerMove().getText().equals(board[2][2].getPlayerMove().getText())&&!board[0][0].getPlayerMove().getText().isEmpty()){
+            System.out.println("player:"+board[0][0].getPlayerMove().getText()+"won");
+            won=true;
+            winner=board[0][0].getPlayerMove().getText();
         }
-        if (board[0][2].getPlayerMove().getText().equals(board[1][1].getPlayerMove().getText())
-                && board[0][2].getPlayerMove().getText().equals(board[2][0].getPlayerMove().getText()) && !board[0][2].getPlayerMove().getText().isEmpty()) {
-            System.out.println("player:" + board[0][0].getPlayerMove().getText() + "won");
-            won = true;
-
+        if(board[0][2].getPlayerMove().getText().equals(board[1][1].getPlayerMove().getText())&&
+                board[0][2].getPlayerMove().getText().equals(board[2][0].getPlayerMove().getText())&&!board[0][2].getPlayerMove().getText().isEmpty()){
+            System.out.println("player:"+board[0][0].getPlayerMove().getText()+"won");
+            won=true;
+            winner=board[0][2].getPlayerMove().getText();
         }
 
         return won;
     }
 
-    public void winMassage() {
+    public void winMessage(){
         String msg;
-        if (board[0][0].getItem().equals("x")) {
-            msg = "O won!";
-        } else {
-            msg = "X won!";
+        if(winner.equals("o")){
+            msg="O won!";
+        }else {
+            msg="X won!";
         }
 
-        Alert gameEndAlert = new Alert(Alert.AlertType.INFORMATION);
+
+
+        Alert gameEndAlert=new Alert(Alert.AlertType.INFORMATION);
         gameEndAlert.setTitle("game ended");
         gameEndAlert.setHeaderText(msg);
         gameEndAlert.showAndWait();
-
+       // ChatRoom
     }
 
     public void botMove() {

@@ -2,7 +2,6 @@ package chatroom.Classes;
 
 import chatroom.ChatRoom;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -27,13 +26,12 @@ public class Cell extends StackPane {
     public Cell(ChatRoom logic){
         this.logic=logic;
         cellRectangle=new Rectangle(100,100);
-
+        
         playerMove=new Text();
         cellRectangle.setFill(null);
         cellRectangle.setStroke(Color.WHITE);
         playerMove.setFont(Font.font(50));
         playerMove.setFill(Color.WHITE);
-        
 
         this.getChildren().addAll(cellRectangle,playerMove);
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -52,36 +50,43 @@ public class Cell extends StackPane {
                             stringToJason();
                             System.out.println(logic.getTurn()+"-----");
 
-}
+
                     }
 
             if(logic.isPlayWithBot()) {
-
+                System.out.println("last index"+index);
                 if (logic.playerWon()) {
-                    logic.winMassage();
+                    logic.winMessage();
                     logic.cleanMap();
-                    index = 0;
-
+                    index = 1;
+                    logic.getPs().println("reset game");
                     return;
 
                 }
                 if (!logic.gameOver()) {
-
-
                     logic.botMove();
-
-
+                    index=1;
 
                 }
 
 
                 if (logic.playerWon()) {
-                    logic.winMassage();
+                    logic.winMessage();
+                    System.out.println(index);
                     logic.cleanMap();
-                    index = 0;
-
+                    index = 1;
+                    logic.getPs().println("reset game");
                     return;
                 }
+                if(logic.gameOver()){
+                    logic.drawMessage();
+                    System.out.println(index);
+                    logic.cleanMap();
+                    index=1;
+                    logic.getPs().println("reset game");
+                    return;
+                }
+
 
 
             }
@@ -91,8 +96,8 @@ public class Cell extends StackPane {
 
 
 
-            });
-       
+            }
+        });
     }
     public String getItem(){
 
@@ -112,5 +117,6 @@ public class Cell extends StackPane {
         System.out.println("test??");
 
     }
+
 
 }

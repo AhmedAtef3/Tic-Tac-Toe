@@ -164,6 +164,8 @@ class ChatHandler extends Thread {
                     optionFlag = "login";
                 } else if (optionFlag.equals("login")) {
                     playerLogin(str, optionFlag);
+                    this.ps.println("resume game");
+                    this.ps.println(DbTask.getMap(this.userName));
                     optionFlag = "";
                 } else if (str.equals("register")) {
                     optionFlag = "register";
@@ -240,6 +242,16 @@ class ChatHandler extends Thread {
                     optionFlag = "map";
                 } else if (str.equals("help")) {
                     this.ps.println("why");
+                }
+                else if(str.equals("save map")){
+                   optionFlag="save to db";
+                }else if(optionFlag.equals("save to db")){
+                    System.out.println("loool");
+
+                    DbTask.saveMap(str,this.userName);
+                    optionFlag="";
+                }else if(str.equals("reset game")){
+                   DbTask.saveMap(null,this.userName);
                 }
 
             } catch (IOException ex) {
