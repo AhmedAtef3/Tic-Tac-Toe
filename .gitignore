@@ -27,3 +27,8 @@ hs_err_pid*
 /SocketServerChat/dist/
 /TicTacToe/build/
 /TicTacToe/dist/
+/SocketServerChat/build.xml/
+/SocketServerChat/manifest.mf/
+/TicTacToe/build.xml/
+/TicTacToe/manifest.mf/
+
