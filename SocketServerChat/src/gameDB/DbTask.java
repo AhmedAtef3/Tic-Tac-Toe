@@ -180,6 +180,34 @@ public class DbTask {
         }
 
     }
+    public static void saveMap(String mapJson,String username){
+        try {
+            PreparedStatement pst = con.prepareStatement("UPDATE players SET map = ?  where username = ?");
+            pst.setString(1, mapJson);
+            pst.setString(2,username);
+            pst.executeUpdate();
+            System.out.println("did it work dada");
+
+        } catch (Exception e) {
+            System.out.println("error");
+        }
+    }
+    public static String getMap(String userName){
+        String sql = "SELECT map FROM players WHERE username = ?";
+        String map = null;
+        try (
+                PreparedStatement pstmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
+            pstmt.setString(1, userName);
+
+            ResultSet resultSet = pstmt.executeQuery();
+            if(resultSet.next()) {
+                 map = resultSet.getString("map");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+       return map;
+    }
     
 
 }
