@@ -291,12 +291,22 @@ public class ChatRoom extends Application {
                                     if (playerComboBox != null) {
                                         System.out.println("combo box update is not empty");
                                         playerComboBox.getItems().clear();
-//                                        for (Player pp : playerList) {
-//                      
-//                                            playerComboBox.getItems().add(
-//                                                    pp.getUsername()
-//                                            );
-//                                        }
+                                        
+                                        for (Player pp : playerList) {
+                                            playerComboBox.getItems().add(
+                                                    pp.getUsername() + "," + pp.getPoints() + "," + pp.getFlag()
+                                            );
+                                        }
+
+                                        playerComboBox.setValue("please choose one player");
+
+                                        // Set the CellFactory property
+                                        playerComboBox.setCellFactory(new ShapeCellFactory());
+                                        // Set the ButtonCell property
+                                        playerComboBox.setButtonCell(new ShapeCell());
+                                        ////////////////////////////////////////////////
+                                        playerComboBox.setValue("please choose one player");
+                                        playerComboBox.setId(("combo-box"));
                                     }
                                 }
 
@@ -378,24 +388,15 @@ public class ChatRoom extends Application {
         errorLabel.setTextFill(Color.RED);
         errorLabel.setVisible(false);
         grid.add(errorLabel, 1, 18);
-        //Text scenetitle = new Text("Welcome to tic tac toe");
-        //scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        //grid.add(scenetitle, 0, 0, 2, 1);
-        //Label userName = new Label("User Name:");
-//        grid.setAlignment(Pos.CENTER);
 
-        //grid.add(userName, 0, 1);
         loginUserTextField = new TextField();
         GridPane.setHalignment(loginUserTextField, HPos.CENTER);
 
-//        loginUserTextField.set;
         grid.add(loginUserTextField, 0, 16);
         GridPane.setColumnSpan(loginUserTextField, 2);
-        //Label pw = new Label("Password:");
-        //grid.add(pw, 0, 2);
+
         loginUserTextField.setPromptText("Username");
         loginUserTextField.setFocusTraversable(false);
-//      loginUserTextField.setStyle("-fx-background-color:white; -fx-font-family: Consolas; -fx-text-fill:#a72b1b;");
         loginUserTextField.setId("textField");
 
         loginpwBox = new PasswordField();
@@ -404,7 +405,6 @@ public class ChatRoom extends Application {
         GridPane.setColumnSpan(loginpwBox, 2);
         loginpwBox.setPromptText("Password");
         loginpwBox.setFocusTraversable(false);
-//      loginpwBox.setStyle("-fx-background-color:white; -fx-font-family: Consolas; -fx-text-fill:#a72b1b;");
         loginpwBox.setId("textField");
 
         Button loginButton = new Button("Sign in");
@@ -572,8 +572,7 @@ public class ChatRoom extends Application {
 //            );
 //        }
         // option list 
-        final ComboBox playerComboBox = new ComboBox();
-        System.out.println(playerList.size() + " number");
+        playerComboBox = new ComboBox();
         for (Player pp : playerList) {
             playerComboBox.getItems().add(
                     pp.getUsername() + "," + pp.getPoints() + "," + pp.getFlag()
@@ -594,7 +593,6 @@ public class ChatRoom extends Application {
         playerComboBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println(playerComboBox.getSelectionModel().getSelectedIndex());
                 int index = playerComboBox.getSelectionModel().getSelectedIndex();
                 username = playerList.get(index).getUsername();
                 userActiveFlag = playerList.get(index).getFlag();
@@ -697,16 +695,14 @@ public class ChatRoom extends Application {
         chatPane.getChildren().add(textMessageArea);
 
         TextField textField = new TextField();
-//        textField.setPrefSize(200, 26);
-//        textField.setMinWidth(200.0);
-        textField.setPrefWidth(200.0);
-//        textField.setMaxWidth(350.0);
+
+        textField.setPrefWidth(180.0);
 
         Button sendButton = new Button("send");
-        sendButton.setPrefWidth(42);
+        sendButton.setPrefWidth(50);
         sendButton.setId("buttons2");
         exitButton = new Button("exit");
-        exitButton.setPrefWidth(42);
+        exitButton.setPrefWidth(50);
         exitButton.setId("buttons2");
 
         sendButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -736,7 +732,6 @@ public class ChatRoom extends Application {
 
         Insets insets = new Insets(20);
 
-        //textArea.appendText(client.receivedMessage);
         HBox hBox = new HBox(10, textField, sendButton, exitButton);
 
         BorderPane root = new BorderPane();
@@ -758,15 +753,9 @@ public class ChatRoom extends Application {
         }
         borderPane.setCenter(gridPane);
         borderPane.setRight(root);
-//        borderPane.setCenter(chatPane); mmm
 
         return borderPane;
 
-        // return root;
-        //Scene scene = new Scene(root, 500, 500);
-        /*primaryStage.setTitle("Chat Room");
-         primaryStage.setScene(scene);
-         primaryStage.show();*/
     }
 
     public GridPane requestPage(String user) {
@@ -782,7 +771,6 @@ public class ChatRoom extends Application {
         Label notation = new Label(user + " wants to play with you, do you accept?");
         notation.setId("main-title");
 
-        //GridPane.setHalignment(notation, HPos.CENTER);
         Button acceptButton = new Button("accept");
         Button cancelButton = new Button("cancel");
 
@@ -812,20 +800,15 @@ public class ChatRoom extends Application {
             }
         });
 
-//        gp.add(notation, 2, 1, 3, 1);
         GridPane.setHalignment(notation, HPos.CENTER);
-//          GridPane.setColumnSpan(notation, 2);
         GridPane.setHalignment(acceptButton, HPos.CENTER);
         GridPane.setHalignment(cancelButton, HPos.CENTER);
         gp.add(notation, 0, 0);
         HBox requestHBox = new HBox(10.0, acceptButton, cancelButton);
         requestHBox.setAlignment(Pos.CENTER);
-//      gp.setGridLinesVisible(true);
         GridPane.setHalignment(requestHBox, HPos.CENTER);
         gp.add(requestHBox, 0, 1);
 
-//        gp.add(acceptButton, 0, 1);
-//        gp.add(cancelButton, 0, 1);
         return gp;
     }
 
@@ -983,7 +966,7 @@ public class ChatRoom extends Application {
     }
 
 }
-        //To edit combobox shape
+//To edit combobox shape
 
 class ShapeCell extends ListCell<String> {
 

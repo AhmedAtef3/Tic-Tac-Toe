@@ -19,7 +19,11 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import socketserverchat.Classes.GameResponse;
+import socketserverchat.Classes.GameResponse;
 import socketserverchat.Classes.MyMessage;
+import socketserverchat.Classes.MyMessage;
+import socketserverchat.Classes.Player;
+import socketserverchat.Classes.Room;
 import socketserverchat.Classes.Room;
 
 /**
@@ -31,20 +35,42 @@ public class SocketServerChat {
     /**
      * @param args the command line arguments
      */
-    ServerSocket serverSocket;
+    private static ServerSocket serverSocket;
+    private ChatHandler chatHandler;
 
-    public SocketServerChat() throws IOException {
-        serverSocket = new ServerSocket(5005);
-        while (true) {
-            Socket s = serverSocket.accept();
-            new ChatHandler(s);
+    public static ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    public ChatHandler getChatHandler() {
+        return chatHandler;
+    }
+    
+    public static void stopServerSocket() {
+        try {
+            serverSocket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketServerChat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static void resumeServerSocket() {
+        try {
+            System.out.println("Accept is allowed again");
+            serverSocket.accept();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketServerChat.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        // TODO code application logic here
-        new SocketServerChat();
-
+    public SocketServerChat() throws IOException {
+        System.out.println("Server is on");
+        serverSocket = new ServerSocket(5005);
+        while (true) {
+            Socket s = serverSocket.accept();
+            chatHandler = new ChatHandler(s);
+            System.out.println("button: " + ServerSocketThread.getPressedButton());
+        }
     }
 }
 
