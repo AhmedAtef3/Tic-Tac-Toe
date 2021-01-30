@@ -205,7 +205,7 @@ public class ChatRoom extends Application {
 
                                 System.out.println("registraaation faaaaileeed");
                             } else if (str.equals("login failed")) {
-                                Platform.runLater(new Runnable() {
+                                    Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
                                         errorLabel.setVisible(true);
@@ -534,9 +534,26 @@ public class ChatRoom extends Application {
 
             @Override
             public void handle(ActionEvent arg0) {
+                if(!usernameField.getText().equals("")  && !nicknameField.getText().equals("") && !passwordfield.getText().equals(""))
+                    
+                    
+                {
                 Player player = new Player(usernameField.getText(), nicknameField.getText(), passwordfield.getText());
                 ps.println("register");
                 ps.println(new Gson().toJson(player));
+                }
+                else 
+                {
+                     Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Alert alertActive = new Alert(AlertType.ERROR);
+                            alertActive.setTitle("Error Message");
+                            alertActive.setHeaderText("All fields are required !!!");
+                            alertActive.showAndWait();
+                        }
+                    });
+                }
             }
         });
 
@@ -558,41 +575,7 @@ public class ChatRoom extends Application {
         // option list 
         playerComboBox = new ComboBox();
         System.out.println(playerList.size() + " number");
-        //Circle circle;
-        //label labelTrial;
-        //Label labelTrial2;
-        //GridPane gridPanes;
-
-        //Building old combobox
-//        for (Player pp : playerList) {
-//            if (pp.getFlag() == 1) {
-//                circle = new Circle(3, Color.GREEN);
-//                labelTrial = new Label(pp.getUsername(), circle);
-//                labelTrial2 = new Label("Score: " + String.valueOf(pp.getPoints()));
-//                gridPanes = new GridPane();
-//                int i = 0;
-//                gridPanes.setHgap(20);
-//                gridPanes.add(labelTrial, i, 0);
-//                gridPanes.add(labelTrial2, i, 1);
-//                i++;
-//
-//            } else {
-//                circle = new Circle(3, Color.RED);
-//                labelTrial = new Label(pp.getUsername(), circle);
-//                labelTrial2 = new Label("Score: " + String.valueOf(pp.getPoints()));
-//                gridPanes = new GridPane();
-//                int i = 0;
-//                gridPanes.setHgap(20);
-//                gridPanes.add(labelTrial, i, 0);
-//                gridPanes.add(labelTrial2, i, 1);
-//                i++;
-//
-//            }
-//            playerComboBox.getItems().add(
-//                    gridPanes
-//            );
-//        }
-        // option list 
+        
         playerComboBox = new ComboBox();
         for (Player pp : playerList) {
             playerComboBox.getItems().add(
@@ -614,15 +597,20 @@ public class ChatRoom extends Application {
         playerComboBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                int index = playerComboBox.getSelectionModel().getSelectedIndex();
-                username = playerList.get(index).getUsername();
-                userActiveFlag = playerList.get(index).getFlag();
+                if(playerComboBox.getSelectionModel().getSelectedIndex() > -1 )
+                {
+                    
+                    int index = playerComboBox.getSelectionModel().getSelectedIndex();
+                    username = playerList.get(index).getUsername();
+                    userActiveFlag = playerList.get(index).getFlag();
+                
+                } 
             }
 
         });
 
         // text 
-//        Label headerLabel = new Label("let's play " + myUserName);
+//        Label hefaderLabel = new Label("let's play " + myUserName);
         Label headerLabel = new Label("Welcome To The Game");
         headerLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 20));
         GridPane.setHalignment(headerLabel, HPos.CENTER);
