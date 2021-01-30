@@ -54,7 +54,7 @@ and open the template in the editor.
     -fx-background-color:white;
 }
 #combo-box .cell:selected {
-    -fx-background-color:white;
+    -fx-background-color:#dd4330;
 }
 #combo-box .list-cell:hover {
     -fx-background-color: #dd4330;
