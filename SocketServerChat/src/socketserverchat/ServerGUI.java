@@ -14,15 +14,23 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import socketserverchat.Classes.Player;
 
@@ -43,6 +51,23 @@ public class ServerGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        
+         Label label = new Label("Educational qualification:");
+     
+     
+      //list View for educational qualification
+      ObservableList<String> names = FXCollections.observableArrayList("Engineering", "MCA", "MBA", "Graduation", "MTECH", "Mphil", "Phd");
+      ListView<String> listView = new ListView<String>(names);
+      listView.setPrefSize(200,520);
+      //Creating the layout
+      VBox layout = new VBox(10);
+      layout.setPadding(new Insets(5, 5, 5, 50));
+      layout.getChildren().addAll(label, listView);
+
+     
+        //Setting the stage
+
         Timer timer = new Timer();
         int begin = 0;
         int timeInterval = 1000;
@@ -73,10 +98,21 @@ public class ServerGUI extends Application {
             }
         } , begin, timeInterval);
 
+
         BorderPane root = new BorderPane();
+        root.setId("second-pane");
         Button startButton = new Button("Start");
+        
+        
+        startButton.setId("startbutton");
+     
         Button stopButton = new Button("Stop");
-        HBox buttons = new HBox(10, startButton, stopButton);
+
+         stopButton.setId("stopbutton");
+        HBox buttons = new HBox(30, startButton, stopButton);
+        buttons.setAlignment(Pos.CENTER);
+        
+
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -102,7 +138,11 @@ public class ServerGUI extends Application {
         });
 
         root.setCenter(buttons);
-        Scene scene = new Scene(root);
+        root.setRight(layout);
+        Scene scene = new Scene(root, 800, 500);
+        scene.getStylesheets().addAll(this.getClass().getResource("serverstyle.css").toExternalForm());
+
+//        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
