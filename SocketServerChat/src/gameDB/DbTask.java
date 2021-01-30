@@ -32,7 +32,7 @@ public class DbTask {
             //String user = "atef";
             //String password = "Iwasbornin1998$";
             // con = DriverManager.getConnection(url, user, password);
-            con = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/game?user=ateef&password=p@ssword");
+            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/game?user=atef&password=Iwasbornin1998$");
 
         } catch (Exception e) {
             System.out.println("not connected");

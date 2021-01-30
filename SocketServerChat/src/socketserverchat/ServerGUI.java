@@ -7,9 +7,12 @@ package socketserverchat;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,6 +24,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import socketserverchat.Classes.Player;
 
 /**
  *
@@ -31,7 +35,7 @@ public class ServerGUI extends Application {
     private boolean firstStartServerFlag = false;
     private Thread serverThread;
     private SocketServerChat startServer;
-
+    Thread updatePlayerThread;
     @Override
     public void init() {
 
@@ -39,14 +43,41 @@ public class ServerGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Timer timer = new Timer();
+        int begin = 0;
+        int timeInterval = 1000;
+        timer.schedule(new TimerTask() {
+            int counter = 0;
+            @Override
+            public void run() {
+                counter++;
+                if (! SocketServerChat.isUpdatedUser) {
+                     Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // do some code 
+                                        System.out.println(SocketServerChat.allPlayers.size());
+                                        SocketServerChat.isUpdatedUser = false;
+                                    }
+                                });
+                }
+                else {
+  
+                    System.out.println(SocketServerChat.allPlayers.size());
+                    for (Player pp : SocketServerChat.allPlayers)
+                    {
+                        System.out.println(pp.getUsername() + " , "+ pp.getFlag());
+                    }
+                }
+                
+            }
+        } , begin, timeInterval);
 
         BorderPane root = new BorderPane();
         Button startButton = new Button("Start");
         Button stopButton = new Button("Stop");
         HBox buttons = new HBox(10, startButton, stopButton);
-        
         startButton.setOnAction(new EventHandler<ActionEvent>() {
-
             @Override
             public void handle(ActionEvent event) {
                 if (firstStartServerFlag == false) {
@@ -85,11 +116,13 @@ public class ServerGUI extends Application {
 
 }
 
+
+
 class ServerSocketThread extends Thread {
-    
+
     private static SocketServerChat startServer;
     private static String pressedButton;
-    
+
     public static String getPressedButton() {
         return pressedButton;
     }
@@ -97,21 +130,21 @@ class ServerSocketThread extends Thread {
     public static SocketServerChat getStartServer() {
         return startServer;
     }
-    
+
     public static void setPressedButton(String buttonStatus) {
         pressedButton = buttonStatus;
     }
 
-
     public ServerSocketThread() {
         this.start();
     }
-    
+
     @Override
     public void run() {
         try {
+
             startServer = new SocketServerChat();
-            System.out.println("port: "+startServer.getServerSocket());
+            System.out.println("port: " + startServer.getServerSocket());
         } catch (IOException ex) {
             Logger.getLogger(ServerSocketThread.class.getName()).log(Level.SEVERE, null, ex);
         }

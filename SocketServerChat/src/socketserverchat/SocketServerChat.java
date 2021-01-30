@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import socketserverchat.Classes.GameResponse;
 import socketserverchat.Classes.GameResponse;
 import socketserverchat.Classes.MyMessage;
@@ -38,6 +39,10 @@ public class SocketServerChat {
      */
     private static ServerSocket serverSocket;
     private ChatHandler chatHandler;
+    // static ServerGUI myGui ;
+
+    static ArrayList<Player> allPlayers = new ArrayList<>();
+    static boolean isUpdatedUser = false;
 
     public static ServerSocket getServerSocket() {
         return serverSocket;
@@ -132,6 +137,10 @@ class ChatHandler extends Thread {
             sendSelfMessage("login failed");
         } else {
             sendAllPlayers(p.getUsername(), "login successfully");
+            SocketServerChat.allPlayers = DbTask.getAll("");
+            SocketServerChat.isUpdatedUser = true;
+
+            System.out.println("All players in my system " + SocketServerChat.allPlayers.size());
         }
     }
 
@@ -156,102 +165,103 @@ class ChatHandler extends Thread {
             try {
                 str = dis.readLine();
                 System.out.println("str: " + str);
-                if (optionFlag.equals("chat")) {
-                    sendMessageToPlayer(str, "request chat");
-                    System.out.println(optionFlag);
-                    optionFlag = "";
-                } else if (str.equals("login")) {
-                    optionFlag = "login";
-                } else if (optionFlag.equals("login")) {
-                    playerLogin(str, optionFlag);
-                    this.ps.println("resume game");
-                    this.ps.println(DbTask.getMap(this.userName));
-                    optionFlag = "";
-                } else if (str.equals("register")) {
-                    optionFlag = "register";
-                } else if (optionFlag.equals("register")) {
-                    String json_string = str;
-                    Gson gson = new Gson();
-                    Player p = gson.fromJson(json_string, Player.class);
-                    if (p != null) {
-                        int idNumber = DbTask.register(p);
-                        if (idNumber != -1) {
-//                            this.ps.println("registered successfully");
-//                            this.userName = p.getUsername();
-//                            ArrayList<Player> players = DbTask.getAll(idNumber);
-//                            ps.println(new Gson().toJson(players));
-                            sendAllPlayers(p.getUsername(), "registered successfully");
-                            this.ps.println("myName");
-                            this.ps.println(this.userName);
-                            System.out.println("current user:" + this.userName);
-                        } else {
-                            this.ps.println("registration failed");
+                if (str != null) {
+                    if (optionFlag.equals("chat")) {
+                        sendMessageToPlayer(str, "request chat");
+                        System.out.println(optionFlag);
+                        optionFlag = "";
+                    } else if (str.equals("login")) {
+                        optionFlag = "login";
+                    } else if (optionFlag.equals("login")) {
+                        playerLogin(str, optionFlag);
+                        this.ps.println("resume game");
+                        this.ps.println(DbTask.getMap(this.userName));
+                        optionFlag = "";
+                    } else if (str.equals("register")) {
+                        optionFlag = "register";
+                    } else if (optionFlag.equals("register")) {
+                        String json_string = str;
+                        Gson gson = new Gson();
+                        Player p = gson.fromJson(json_string, Player.class);
+                        if (p != null) {
+                            int idNumber = DbTask.register(p);
+                            if (idNumber != -1) {
+
+                                sendAllPlayers(p.getUsername(), "registered successfully");
+                                this.ps.println("myName");
+                                this.ps.println(this.userName);
+                                System.out.println("current user:" + this.userName);
+                                SocketServerChat.allPlayers = DbTask.getAll("");
+                                SocketServerChat.isUpdatedUser = true;                               
+                                System.out.println("All players in my system " + SocketServerChat.allPlayers.size());
+                            } else {
+                                this.ps.println("registration failed");
+                            }
                         }
-                    }
-                    System.out.println(optionFlag);
-                    optionFlag = "";
+                        System.out.println(optionFlag);
+                        optionFlag = "";
 
-                } else if (str.equals("chat")) {
-                    System.out.println("ana dkhlt hna el awl");
-                    optionFlag = "chat";
-                } else if (str.equals("accepted")) {
-                    System.out.println("ana dkhlt hna tany");
-                    optionFlag = "accepted";
-                } else if (optionFlag.equals("accepted")) {
-                    sendMessageToPlayer(str, "accept chat");
-                    System.out.println(optionFlag);
-                    rooms.add(new Room(this.userName, str));
-                    //player one
-                    System.out.println("maybe player1" + str);
-                    optionFlag = "";
-                } else if (str.equals("send message")) {
-                    System.out.println("sent sent sent");
-                    optionFlag = "sent";
-                } else if (optionFlag.equals("sent")) {
-                    System.out.println("ana hna");
-                    Gson gson = new Gson();
-                    MyMessage message = gson.fromJson(str, MyMessage.class);
-                    sendTextMessageToPlayer(message);
-                    System.out.println(optionFlag);
-                    optionFlag = "";
-                } else if (str.equals("exit")) {
-                    DbTask.updateOffLine(this.userName);
-                    clientsArrayList.remove(this);
-                    this.stop();
-                } else if (optionFlag.equals("map")) {
-                    System.out.println("wutt??");
-                    System.out.println(str);
+                    } else if (str.equals("chat")) {
+                        System.out.println("ana dkhlt hna el awl");
+                        optionFlag = "chat";
+                    } else if (str.equals("accepted")) {
+                        System.out.println("ana dkhlt hna tany");
+                        optionFlag = "accepted";
+                    } else if (optionFlag.equals("accepted")) {
+                        sendMessageToPlayer(str, "accept chat");
+                        System.out.println(optionFlag);
+                        rooms.add(new Room(this.userName, str));
+                        //player one
+                        System.out.println("maybe player1" + str);
+                        optionFlag = "";
+                    } else if (str.equals("send message")) {
+                        System.out.println("sent sent sent");
+                        optionFlag = "sent";
+                    } else if (optionFlag.equals("sent")) {
+                        System.out.println("ana hna");
+                        Gson gson = new Gson();
+                        MyMessage message = gson.fromJson(str, MyMessage.class);
+                        sendTextMessageToPlayer(message);
+                        System.out.println(optionFlag);
+                        optionFlag = "";
+                    } else if (str.equals("exit")) {
+                        DbTask.updateOffLine(this.userName);
+                        clientsArrayList.remove(this);
+                        this.stop();
+                    } else if (optionFlag.equals("map")) {
+                        System.out.println("wutt??");
+                        System.out.println(str);
 
-                    Gson gson = new Gson();
-                    GameResponse g1 = gson.fromJson(str, GameResponse.class);
+                        Gson gson = new Gson();
+                        GameResponse g1 = gson.fromJson(str, GameResponse.class);
 
-                    String[][] stringArr = g1.getArr();
-                    gameResponse = new GameResponse(stringArr, playerWon(stringArr), draw(stringArr), g1.getPlayer1(), "");
+                        String[][] stringArr = g1.getArr();
+                        gameResponse = new GameResponse(stringArr, playerWon(stringArr), draw(stringArr), g1.getPlayer1(), "");
 
-                    //System.out.println("\n---------------------"+gameResponseJson+"\n---------------------------");
-                    sendToPlayers(this.userName, gameResponse);
+                        //System.out.println("\n---------------------"+gameResponseJson+"\n---------------------------");
+                        sendToPlayers(this.userName, gameResponse);
 //                    gameinfoToSelf(gameResponseJson);
 //                    if(this.userName.equals(g1.getPlayer1())) {
 //                        sendMsg(g1.getPlayer2(), gameResponseJson);
 //                    }else if(this.userName.equals(g1.getPlayer2())){
 //                        sendMsg(g1.getPlayer1(), gameResponseJson);
 //                    }
-                    optionFlag = "";
-                } else if (str.equals("cell got clicked")) {
-                    System.out.println("+==++=");
-                    optionFlag = "map";
-                } else if (str.equals("help")) {
-                    this.ps.println("why");
-                }
-                else if(str.equals("save map")){
-                   optionFlag="save to db";
-                }else if(optionFlag.equals("save to db")){
-                    System.out.println("loool");
+                        optionFlag = "";
+                    } else if (str.equals("cell got clicked")) {
+                        System.out.println("+==++=");
+                        optionFlag = "map";
+                    } else if (str.equals("help")) {
+                        this.ps.println("why");
+                    } else if (str.equals("save map")) {
+                        optionFlag = "save to db";
+                    } else if (optionFlag.equals("save to db")) {
+                        System.out.println("loool");
 
-                    DbTask.saveMap(str,this.userName);
-                    optionFlag="";
-                }else if(str.equals("reset game")){
-                   DbTask.saveMap(null,this.userName);
+                        DbTask.saveMap(str, this.userName);
+                        optionFlag = "";
+                    } else if (str.equals("reset game")) {
+                        DbTask.saveMap(null, this.userName);
+                    }
                 }
 
             } catch (IOException ex) {
@@ -275,11 +285,6 @@ class ChatHandler extends Thread {
             ch.suspend();
         }
     }
-                
-       
-    
-
-    
 
     public static void resumeAll() {
         for (ChatHandler ch : clientsArrayList) {
@@ -288,6 +293,7 @@ class ChatHandler extends Thread {
     }
 
     public void sendMessageToAll() {
+        System.out.println("laaaaailaaaaaaaaaaaaaaaaaaaaaaa");
         ArrayList<Player> players;
         for (ChatHandler ch : clientsArrayList) {
             //if (!ch.userName.equals(this.userName)) {
@@ -344,8 +350,8 @@ class ChatHandler extends Thread {
                     } else {
                         System.out.println("o is the winner" + rooms.get(i).getPlayer1());
                         DbTask.updateScore(rooms.get(i).getPlayer1());
-
                     }
+                     sendMessageToAll();
                     rooms.remove(i);
                 }
             }
