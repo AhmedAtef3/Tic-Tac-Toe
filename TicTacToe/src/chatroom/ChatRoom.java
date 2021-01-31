@@ -674,7 +674,10 @@ public class ChatRoom extends Application {
 
         textMessageArea.setLayoutX(5);
         textMessageArea.setLayoutY(5);
-        chatPane.getChildren().add(textMessageArea);
+        if (!playWithBot) {
+
+            chatPane.getChildren().add(textMessageArea);
+        }
 
         TextField textField = new TextField();
 
@@ -723,11 +726,17 @@ public class ChatRoom extends Application {
         });
 
         Insets insets = new Insets(20);
-
-        HBox hBox = new HBox(10, textField, sendButton, exitButton);
-
+        HBox hBox;
+        if (!playWithBot) {
+            hBox = new HBox(10, textField, sendButton, exitButton);
+        } else {
+            hBox = new HBox(10, exitButton);
+        }
         BorderPane root = new BorderPane();
-        root.setCenter(textMessageArea);
+        if (!playWithBot) {
+
+            root.setCenter(textMessageArea);
+        }
         root.setId("left-borderPane");
         BorderPane.setMargin(textMessageArea, insets);
         root.setBottom(hBox);
