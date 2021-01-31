@@ -194,7 +194,6 @@ public class ChatRoom extends Application {
                     try {
                         str = dis.readLine();
                         if (str != null) {
-//                        System.out.println(str);
 
                             if (str.equals("registration failed")) {
                                 Platform.runLater(new Runnable() {
@@ -204,23 +203,19 @@ public class ChatRoom extends Application {
                                     }
                                 });
 
-                                System.out.println("registraaation faaaaileeed");
                             } else if (str.equals("login failed")) {
-                                    Platform.runLater(new Runnable() {
+                                Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
                                         errorLabel.setVisible(true);
                                     }
                                 });
-                                System.out.println("logiiin faaaaileeed");
                             } else if (str.equals("login successfully")) {
                                 successfull = true;
 
                             } else if (str.equals("registered successfully")) {
-                                System.out.println("hoss");
                                 successfull = true;
                             } else if (str.equals("request chat")) {
-                                System.out.println("ana dkhlt hna");
                                 flagName = "request";
 
                             } else if (flagName.equals("request")) {
@@ -232,12 +227,10 @@ public class ChatRoom extends Application {
                                     }
                                 });
 
-                                System.out.println(str + "sent");
                                 flagName = "";
                             } else if (str.equals("accept chat")) {
                                 flagName = "accept";
                             } else if (flagName.equals("accept")) {
-                                System.out.println("player " + str);
                                 final String playerName = str;
                                 Platform.runLater(new Runnable() {
                                     @Override
@@ -247,16 +240,13 @@ public class ChatRoom extends Application {
                                 });
                                 flagName = "";
                             } else if (str.equals("text message")) {
-                                System.out.println("here " + str);
                                 flagName = "message";
                             } else if (flagName.equals("message")) {
-                                System.out.println("mar7aba " + str);
                                 textMessageArea.appendText(str + "\n");
                                 flagName = "";
                             } else if (successfull == true) {
 
                                 String json_string = str;
-                                System.out.println(json_string);
                                 Gson gson = new Gson();
                                 ArrayList<Player> players = new ArrayList<>();
                                 Type playerListType = new TypeToken<ArrayList<Player>>() {
@@ -272,14 +262,11 @@ public class ChatRoom extends Application {
                                 });
 
                                 int i = 0;
-                                for (Player pp : playerList) {
-                                    System.out.println(pp.getUsername());
-                                }
+
                                 successfull = false;
 
                             } else if (str.equals("update player list")) {
                                 flagName = "update player list";
-                                System.out.println("how many times?");
 
                             } else if (flagName.equals("update player list")) {
                                 Gson gson = new Gson();
@@ -287,14 +274,11 @@ public class ChatRoom extends Application {
                                 ArrayList<Player> players = new ArrayList<>();
                                 Type playerListType = new TypeToken<ArrayList<Player>>() {
                                 }.getType();
-                                System.out.println("before playerlist: " + str);
                                 playerList = gson.fromJson(str, playerListType);
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        System.out.println("combobox update");
                                         if (playerComboBox != null) {
-                                            System.out.println("combo box update is not empty");
                                             playerComboBox.getItems().clear();
 
                                             for (Player pp : playerList) {
@@ -315,51 +299,44 @@ public class ChatRoom extends Application {
                                     }
 
                                 });
-                                System.out.println("update list: " + str);
                                 flagName = "";
-                            } else if(flagName.equals("get map")){
-                            Gson gson=new Gson();
-                            System.out.println(str);
-                            GameResponse gameResponse=gson.fromJson(str,GameResponse.class);
+                            } else if (flagName.equals("get map")) {
+                                Gson gson = new Gson();
+                                GameResponse gameResponse = gson.fromJson(str, GameResponse.class);
 
-                            if(!gameResponse.getTurn().isEmpty()){
-                                turn=gameResponse.getTurn();
-                                System.out.println("client"+ gameResponse.getTurn());
-                            }
-                            String[][] stringArr = gameResponse.getArr();
-                            //test loop
-                            System.out.println("----------------------------------------------");
-                            for (int i = 0; i < 3; i++) {
-                                for (int j = 0; j < 3; j++) {
-                                    System.out.print(stringArr[i][j] + ",");
+                                if (!gameResponse.getTurn().isEmpty()) {
+                                    turn = gameResponse.getTurn();
                                 }
-                                System.out.println();
-                            }
-                            for (int i = 0; i < board.length; i++) {
-                                for (int j = 0; j < board[i].length; j++) {
-                                    if (!stringArr[i][j].isEmpty()) {
-                                        board[i][j].getPlayerMove().setText(stringArr[i][j]);
+                                String[][] stringArr = gameResponse.getArr();
+                                //test loop
+                                for (int i = 0; i < 3; i++) {
+                                    for (int j = 0; j < 3; j++) {
                                     }
                                 }
+                                for (int i = 0; i < board.length; i++) {
+                                    for (int j = 0; j < board[i].length; j++) {
+                                        if (!stringArr[i][j].isEmpty()) {
+                                            board[i][j].getPlayerMove().setText(stringArr[i][j]);
+                                        }
+                                    }
 
-                            }
-                            if (gameResponse.isGameOver()) {
-                                winMessage(gameResponse.getTurn());
+                                }
+                                if (gameResponse.isGameOver()) {
+                                    winMessage(gameResponse.getTurn());
 
-                            }else  if(gameResponse.isDraw()){
+                                } else if (gameResponse.isDraw()) {
 
-                                drawMessage();
-                            }
-                            flagName="";
-                        }else if (str.equals("myName")) {
+                                    drawMessage();
+                                }
+                                flagName = "";
+                            } else if (str.equals("myName")) {
                                 flagName = "getName";
                             } else if (flagName.equals("getName")) {
                                 myUserName = str;
                                 flagName = "";
                             } else if (str.equals("update game")) {
                                 flagName = "get map";
-                            } 
-                            else if (str.equals("pause")) {
+                            } else if (str.equals("pause")) {
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
@@ -369,22 +346,13 @@ public class ChatRoom extends Application {
                                         alertActive.showAndWait();
                                     }
                                 });
-                            }/* else if(str.equals("resume game")){
-                            flagName="res game";
+                            } else if (str.equals("resume-game-play")) {
+                                flagName = "resume-game";
+                            } else if (flagName.equals("resume-game")) {
+                                Gson gson = new Gson();
 
-                        }else if(flagName.equals("res game")){
-                            Gson gson=new Gson();
-
-                            map=gson.fromJson(str,String[][].class);
-                           resumeGame=true;
-                        }*/else if(str.equals("resume-game-play")){
-                                flagName="resume-game";
-                            }else if(flagName.equals("resume-game")){
-                                Gson gson=new Gson();
-
-                                map=gson.fromJson(str,String[][].class);
-                                resumeGame=true;
-                                System.out.println("why are you not here you fucking json:"+str);
+                                map = gson.fromJson(str, String[][].class);
+                                resumeGame = true;
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
@@ -393,16 +361,13 @@ public class ChatRoom extends Application {
                                     }
                                 });
 
-                                flagName="";
+                                flagName = "";
                             }
 
-                            System.out.println(str);
                         } else {
-                            System.out.println("Server is down");
 
                         }
                     } catch (IOException ex) {
-                        System.out.println("lina");
                     }
                 }
             }
@@ -551,17 +516,12 @@ public class ChatRoom extends Application {
 
             @Override
             public void handle(ActionEvent arg0) {
-                if(!usernameField.getText().equals("")  && !nicknameField.getText().equals("") && !passwordfield.getText().equals(""))
-                    
-                    
-                {
-                Player player = new Player(usernameField.getText(), nicknameField.getText(), passwordfield.getText());
-                ps.println("register");
-                ps.println(new Gson().toJson(player));
-                }
-                else 
-                {
-                     Platform.runLater(new Runnable() {
+                if (!usernameField.getText().equals("") && !nicknameField.getText().equals("") && !passwordfield.getText().equals("")) {
+                    Player player = new Player(usernameField.getText(), nicknameField.getText(), passwordfield.getText());
+                    ps.println("register");
+                    ps.println(new Gson().toJson(player));
+                } else {
+                    Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
                             Alert alertActive = new Alert(AlertType.ERROR);
@@ -591,8 +551,7 @@ public class ChatRoom extends Application {
 
         // option list 
         playerComboBox = new ComboBox();
-        System.out.println(playerList.size() + " number");
-        
+
         playerComboBox = new ComboBox();
         for (Player pp : playerList) {
             playerComboBox.getItems().add(
@@ -614,20 +573,17 @@ public class ChatRoom extends Application {
         playerComboBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(playerComboBox.getSelectionModel().getSelectedIndex() > -1 )
-                {
-                    
+                if (playerComboBox.getSelectionModel().getSelectedIndex() > -1) {
+
                     int index = playerComboBox.getSelectionModel().getSelectedIndex();
                     username = playerList.get(index).getUsername();
                     userActiveFlag = playerList.get(index).getFlag();
-                
-                } 
+
+                }
             }
 
         });
 
-        // text 
-//        Label hefaderLabel = new Label("let's play " + myUserName);
         Label headerLabel = new Label("Welcome To The Game");
         headerLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 20));
         GridPane.setHalignment(headerLabel, HPos.CENTER);
@@ -647,7 +603,6 @@ public class ChatRoom extends Application {
             public void changed(ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) {
 
                 RadioButton chk = (RadioButton) t1.getToggleGroup().getSelectedToggle(); // Cast object to radio button
-                System.out.println("Selected Radio Button - " + chk.getText());
                 if (chk.getText().equals("computer")) {
                     playWithBot = true;
                 }
@@ -658,7 +613,7 @@ public class ChatRoom extends Application {
         VBox hbox = new VBox(radioButton1, radioButton2);
         hbox.setSpacing(10);
         //play button
-         playButton = new Button("play");
+        playButton = new Button("play");
         playButton.setPrefHeight(70);
         playButton.setDefaultButton(true);
         playButton.setPrefWidth(130);
@@ -668,20 +623,15 @@ public class ChatRoom extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-               // isX = true;
                 if (playWithBot) {
-                    resumeGame=true;
+                    resumeGame = true;
                     ps.println("resume play");
-                    //   playButton.getScene().setRoot(playPage(""));
 
-
-
-
-                    isX=true;
+                    isX = true;
                 } else if (userActiveFlag == 1) {
                     ps.println("chat");
                     ps.println(username);
-                    isX=true;
+                    isX = true;
                 } else {
                     Platform.runLater(new Runnable() {
                         @Override
@@ -694,13 +644,11 @@ public class ChatRoom extends Application {
                     });
                 }
 
-                //playButton.getScene().setRoot(playPage());
             }
         });
 
         alertLabel = new Label("alert");
         alertLabel.setVisible(false);
-        System.out.println("Alert Initialized" + alertLabel.getText());
 
         grid.add(headerLabel, 2, 2);
         grid.add(playerComboBox, 2, 10);
@@ -754,20 +702,19 @@ public class ChatRoom extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                if(playWithBot==false) {
+                if (playWithBot == false) {
                     ps.println("exit");
                     System.exit(0);
-                }else{
-                    resumeGame=false;
-                    playWithBot=false;
-                    turn="o";
-                    isX=false;
+                } else {
+                    resumeGame = false;
+                    playWithBot = false;
+                    turn = "o";
+                    isX = false;
                     ps.println("save map");
-                    Gson gson=new Gson();
-                    String myMap= gson.toJson(cellValues(),String[][].class);
-                    System.out.println("wtf dude its"+myMap);
+                    Gson gson = new Gson();
+                    String myMap = gson.toJson(cellValues(), String[][].class);
                     ps.println(myMap);
-                    map=null;
+                    map = null;
                     exitButton.getScene().setRoot(mainPage());
 
                 }
@@ -796,11 +743,10 @@ public class ChatRoom extends Application {
                 board[i][j] = cell;
             }
         }
-        System.out.println("resume game value:"+resumeGame);
-        if(resumeGame){
+        if (resumeGame) {
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[i].length; j++) {
-                    if (map!=null) {
+                    if (map != null) {
                         board[i][j].getPlayerMove().setText(map[i][j]);
                     }
                 }
@@ -815,7 +761,6 @@ public class ChatRoom extends Application {
     }
 
     public GridPane requestPage(String user) {
-        System.out.println("I'm in request page!!!");
 
         GridPane gp = new GridPane();
         gp.setAlignment(Pos.CENTER);
@@ -882,14 +827,12 @@ public class ChatRoom extends Application {
                 gameEndAlert.setTitle("game ended");
                 gameEndAlert.setHeaderText(msg);
                 gameEndAlert.showAndWait();
-                turn="o";
-                isX=false;
+                turn = "o";
+                isX = false;
                 exitButton.getScene().setRoot(mainPage());
-
 
             }
         });
-
 
     }
 
@@ -902,7 +845,7 @@ public class ChatRoom extends Application {
 
     }
 
-    public void drawMessage(){
+    public void drawMessage() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -910,8 +853,8 @@ public class ChatRoom extends Application {
                 gameEndAlert.setTitle("game ended");
                 gameEndAlert.setHeaderText("draw!");
                 gameEndAlert.showAndWait();
-                turn="o";
-                isX=false;
+                turn = "o";
+                isX = false;
                 exitButton.getScene().setRoot(mainPage());
 
             }
@@ -949,67 +892,62 @@ public class ChatRoom extends Application {
         return myUserName;
     }
 
-    public boolean playerWon(){
+    public boolean playerWon() {
         //row
-        boolean won=false;
-        for(int i=0;i<board.length;i++ ){
-            if(board[i][0].getPlayerMove().getText().equals(board[i][1].getPlayerMove().getText()) &&
-                    board[i][0].getPlayerMove().getText().equals(board[i][2].getPlayerMove().getText())&&
-                    !board[i][0].getPlayerMove().getText().isEmpty()){
-                System.out.println("player:"+board[i][0].getPlayerMove().getText()+"won");
-                won=true;
-                winner=board[i][0].getPlayerMove().getText();
+        boolean won = false;
+        for (int i = 0; i < board.length; i++) {
+            if (board[i][0].getPlayerMove().getText().equals(board[i][1].getPlayerMove().getText())
+                    && board[i][0].getPlayerMove().getText().equals(board[i][2].getPlayerMove().getText())
+                    && !board[i][0].getPlayerMove().getText().isEmpty()) {
+                won = true;
+                winner = board[i][0].getPlayerMove().getText();
             }
         }
         //column
-        for(int i=0;i<board.length;i++ ){
-            if(board[0][i].getPlayerMove().getText().equals(board[1][i].getPlayerMove().getText()) &&
-                    board[0][i].getPlayerMove().getText().equals(board[2][i].getPlayerMove().getText())&&
-                    !board[0][i].getPlayerMove().getText().isEmpty()){
-                System.out.println("player:"+board[i][0].getPlayerMove().getText()+"won");
-                won=true;
-                winner=board[0][i].getPlayerMove().getText();
+        for (int i = 0; i < board.length; i++) {
+            if (board[0][i].getPlayerMove().getText().equals(board[1][i].getPlayerMove().getText())
+                    && board[0][i].getPlayerMove().getText().equals(board[2][i].getPlayerMove().getText())
+                    && !board[0][i].getPlayerMove().getText().isEmpty()) {
+                won = true;
+                winner = board[0][i].getPlayerMove().getText();
             }
         }
         //diagonal
-        if(board[0][0].getPlayerMove().getText().equals(board[1][1].getPlayerMove().getText()) &&
-                board[0][0].getPlayerMove().getText().equals(board[2][2].getPlayerMove().getText())&&!board[0][0].getPlayerMove().getText().isEmpty()){
-            System.out.println("player:"+board[0][0].getPlayerMove().getText()+"won");
-            won=true;
-            winner=board[0][0].getPlayerMove().getText();
+        if (board[0][0].getPlayerMove().getText().equals(board[1][1].getPlayerMove().getText())
+                && board[0][0].getPlayerMove().getText().equals(board[2][2].getPlayerMove().getText()) && !board[0][0].getPlayerMove().getText().isEmpty()) {
+            won = true;
+            winner = board[0][0].getPlayerMove().getText();
         }
-        if(board[0][2].getPlayerMove().getText().equals(board[1][1].getPlayerMove().getText())&&
-                board[0][2].getPlayerMove().getText().equals(board[2][0].getPlayerMove().getText())&&!board[0][2].getPlayerMove().getText().isEmpty()){
-            System.out.println("player:"+board[0][0].getPlayerMove().getText()+"won");
-            won=true;
-            winner=board[0][2].getPlayerMove().getText();
+        if (board[0][2].getPlayerMove().getText().equals(board[1][1].getPlayerMove().getText())
+                && board[0][2].getPlayerMove().getText().equals(board[2][0].getPlayerMove().getText()) && !board[0][2].getPlayerMove().getText().isEmpty()) {
+            won = true;
+            winner = board[0][2].getPlayerMove().getText();
         }
 
         return won;
     }
 
-    public void winMessage(){
+    public void winMessage() {
         String msg;
-        if(winner.equals("o")){
-            msg="O won!";
-        }else {
-            msg="X won!";
+        if (winner.equals("o")) {
+            msg = "O won!";
+        } else {
+            msg = "X won!";
         }
 
-
-
-        Alert gameEndAlert=new Alert(Alert.AlertType.INFORMATION);
+        Alert gameEndAlert = new Alert(Alert.AlertType.INFORMATION);
         gameEndAlert.setTitle("game ended");
         gameEndAlert.setHeaderText(msg);
         gameEndAlert.showAndWait();
         // ChatRoom
     }
-    public void botMove(){
 
-        while (true){
-            int x= new Random().nextInt(2-0+1)+0;
-            int y=new Random().nextInt(2-0+1)+0;
-            if(board[x][y].getPlayerMove().getText().isEmpty()){
+    public void botMove() {
+
+        while (true) {
+            int x = new Random().nextInt(2 - 0 + 1) + 0;
+            int y = new Random().nextInt(2 - 0 + 1) + 0;
+            if (board[x][y].getPlayerMove().getText().isEmpty()) {
                 board[x][y].getPlayerMove().setText("o");
                 break;
             }
@@ -1017,17 +955,15 @@ public class ChatRoom extends Application {
 
     }
 
-    public boolean gameOver(){
-        for(int i=0;i<board.length;i++){
-            for(int j=0;j<board[i].length;j++){
-                if(board[i][j].getPlayerMove().getText().isEmpty()){
+    public boolean gameOver() {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j].getPlayerMove().getText().isEmpty()) {
                     return false;
                 }
             }
 
-
         }
-        System.out.println("test");
         return true;
     }
 }
@@ -1078,20 +1014,3 @@ class ShapeCellFactory implements Callback<ListView<String>, ListCell<String>> {
         return new ShapeCell();
     }
 }
-
-/*
-
-
- Platform.runLater(new Runnable() {
- @Override
- public void run() {
- Alert gameEndAlert = new Alert(Alert.AlertType.INFORMATION);
- gameEndAlert.setTitle("game ended");
- gameEndAlert.setHeaderText("draw!");
- gameEndAlert.showAndWait();
- }
-
- });
-
-
- */

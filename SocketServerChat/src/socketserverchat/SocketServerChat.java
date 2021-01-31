@@ -54,8 +54,10 @@ public class SocketServerChat {
 
     public static void stopServerSocket() {
         try {
-            serverSocket.close();
-            ChatHandler.pauseAll();
+            if (serverSocket != null) {
+                serverSocket.close();
+                ChatHandler.pauseAll();
+            }
         } catch (IOException ex) {
             Logger.getLogger(SocketServerChat.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,12 +68,12 @@ public class SocketServerChat {
     }
 
     public SocketServerChat() throws IOException {
-        System.out.println("Server is on");
         serverSocket = new ServerSocket(5005);
         while (true) {
-            Socket s = serverSocket.accept();
-            chatHandler = new ChatHandler(s);
-            System.out.println("button: " + ServerSocketThread.getPressedButton());
+            if (! serverSocket.isClosed()) {
+                Socket s = serverSocket.accept();
+                chatHandler = new ChatHandler(s);
+            }
         }
     }
 }
@@ -98,7 +100,6 @@ class ChatHandler extends Thread {
     }
 
     public static boolean checkExistence(String username) {
-        System.out.println("size: " + clientsArrayList.size());
         if (clientsArrayList.size() > 0) {
             for (ChatHandler user : clientsArrayList) {
                 if (user.userName.equals(username)) {
@@ -140,7 +141,6 @@ class ChatHandler extends Thread {
             SocketServerChat.allPlayers = DbTask.getAll("");
             SocketServerChat.isUpdatedUser = true;
 
-            System.out.println("All players in my system " + SocketServerChat.allPlayers.size());
         }
     }
 
@@ -148,7 +148,6 @@ class ChatHandler extends Thread {
         Player p = convertJsonToPlayer(str);
         if (p != null) {
             Player dataBasePlayer = DbTask.getPerson(p);
-//            System.out.println(dataBasePlayer.getUsername() + " Null pointer Exception ");
             if (dataBasePlayer != null) {
                 sendLoginDataAfterLoginSuccessfully(dataBasePlayer);
             } else {
@@ -164,11 +163,9 @@ class ChatHandler extends Thread {
             String str = null;
             try {
                 str = dis.readLine();
-                System.out.println("str: " + str);
                 if (str != null) {
                     if (optionFlag.equals("chat")) {
                         sendMessageToPlayer(str, "request chat");
-                        System.out.println(optionFlag);
                         optionFlag = "";
                     } else if (str.equals("login")) {
                         optionFlag = "login";
@@ -190,47 +187,35 @@ class ChatHandler extends Thread {
                                 sendAllPlayers(p.getUsername(), "registered successfully");
                                 this.ps.println("myName");
                                 this.ps.println(this.userName);
-                                System.out.println("current user:" + this.userName);
                                 SocketServerChat.allPlayers = DbTask.getAll("");
-                                SocketServerChat.isUpdatedUser = true;                               
-                                System.out.println("All players in my system " + SocketServerChat.allPlayers.size());
+                                SocketServerChat.isUpdatedUser = true;
                             } else {
                                 this.ps.println("registration failed");
                             }
                         }
-                        System.out.println(optionFlag);
                         optionFlag = "";
 
                     } else if (str.equals("chat")) {
-                        System.out.println("ana dkhlt hna el awl");
                         optionFlag = "chat";
                     } else if (str.equals("accepted")) {
-                        System.out.println("ana dkhlt hna tany");
                         optionFlag = "accepted";
                     } else if (optionFlag.equals("accepted")) {
                         sendMessageToPlayer(str, "accept chat");
-                        System.out.println(optionFlag);
                         rooms.add(new Room(this.userName, str));
                         //player one
-                        System.out.println("maybe player1" + str);
                         optionFlag = "";
                     } else if (str.equals("send message")) {
-                        System.out.println("sent sent sent");
                         optionFlag = "sent";
                     } else if (optionFlag.equals("sent")) {
-                        System.out.println("ana hna");
                         Gson gson = new Gson();
                         MyMessage message = gson.fromJson(str, MyMessage.class);
                         sendTextMessageToPlayer(message);
-                        System.out.println(optionFlag);
                         optionFlag = "";
                     } else if (str.equals("exit")) {
                         DbTask.updateOffLine(this.userName);
                         clientsArrayList.remove(this);
                         this.stop();
                     } else if (optionFlag.equals("map")) {
-                        System.out.println("wutt??");
-                        System.out.println(str);
 
                         Gson gson = new Gson();
                         GameResponse g1 = gson.fromJson(str, GameResponse.class);
@@ -238,33 +223,24 @@ class ChatHandler extends Thread {
                         String[][] stringArr = g1.getArr();
                         gameResponse = new GameResponse(stringArr, playerWon(stringArr), draw(stringArr), g1.getPlayer1(), "");
 
-                        //System.out.println("\n---------------------"+gameResponseJson+"\n---------------------------");
                         sendToPlayers(this.userName, gameResponse);
-//                    gameinfoToSelf(gameResponseJson);
-//                    if(this.userName.equals(g1.getPlayer1())) {
-//                        sendMsg(g1.getPlayer2(), gameResponseJson);
-//                    }else if(this.userName.equals(g1.getPlayer2())){
-//                        sendMsg(g1.getPlayer1(), gameResponseJson);
-//                    }
+
                         optionFlag = "";
                     } else if (str.equals("cell got clicked")) {
-                        System.out.println("+==++=");
                         optionFlag = "map";
                     } else if (str.equals("help")) {
                         this.ps.println("why");
                     } else if (str.equals("save map")) {
                         optionFlag = "save to db";
                     } else if (optionFlag.equals("save to db")) {
-                        System.out.println("loool");
 
                         DbTask.saveMap(str, this.userName);
                         optionFlag = "";
                     } else if (str.equals("reset game")) {
                         DbTask.saveMap(null, this.userName);
-                    }else if(str.equals("resume play")){
+                    } else if (str.equals("resume play")) {
                         this.ps.println("resume-game-play");
                         this.ps.println(DbTask.getMap(this.userName));
-                        System.out.println("current db map for"+this.userName+":"+DbTask.getMap(this.userName));
                     }
                 }
 
@@ -297,21 +273,16 @@ class ChatHandler extends Thread {
     }
 
     public void sendMessageToAll() {
-        System.out.println("laaaaailaaaaaaaaaaaaaaaaaaaaaaa");
         ArrayList<Player> players;
         for (ChatHandler ch : clientsArrayList) {
-            //if (!ch.userName.equals(this.userName)) {
             players = DbTask.getAll(ch.userName);
             ch.ps.println("update player list");
             ch.ps.println(new Gson().toJson(players));
-            System.out.println("sendUpdatedMessageToAll: " + new Gson().toJson(players));
-            //}
         }
     }
 
     void sendMessageToPlayer(String username, String message) {
         for (ChatHandler ch : clientsArrayList) {
-            System.out.println(username + ", " + ch.userName);
             if (ch.userName.equals(username)) {
                 ch.ps.println(message);
                 ch.ps.println(this.userName);
@@ -321,7 +292,6 @@ class ChatHandler extends Thread {
 
     void sendTextMessageToPlayer(MyMessage sentMessage) {
         for (ChatHandler ch : clientsArrayList) {
-            System.out.println(sentMessage.getUsername() + ", " + sentMessage.getMessage() + ", " + ch.userName);
             if (ch.userName.equals(sentMessage.getUsername())) {
                 ch.ps.println("text message");
                 ch.ps.println(this.userName + " >>> " + sentMessage.getMessage());
@@ -333,29 +303,26 @@ class ChatHandler extends Thread {
     }
 
     void sendToPlayers(String userName, GameResponse gameResponse) {
-        System.out.println("===========\nbefore the loop\n=========");
 
         for (int i = 0; i < rooms.size(); i++) {
-            System.out.println(rooms.get(i) + "user name: " + userName);
             if (rooms.get(i).getPlayer1().equals(userName) || rooms.get(i).getPlayer2().equals(userName)) {
                 gameResponse.setTurn(rooms.get(i).getItem());
                 Gson gson = new Gson();
                 String gameResponseJson = gson.toJson(gameResponse);
                 sendMsg(rooms.get(i).getPlayer2(), gameResponseJson);
-                System.out.println("------------------------------\ninside the loop\n------------------------");
                 sendMsg(rooms.get(i).getPlayer1(), gameResponseJson);
                 if (gameResponse.isGameOver()) {
-                    System.out.println("*****************\nis game over ???\n*****************");
                     String winner = gameResponse.getTurn();
                     if (winner.equals("x")) {
-                        System.out.println("x is the winner: " + rooms.get(i).getPlayer2());
                         DbTask.updateScore(rooms.get(i).getPlayer2());
 
                     } else {
-                        System.out.println("o is the winner" + rooms.get(i).getPlayer1());
                         DbTask.updateScore(rooms.get(i).getPlayer1());
                     }
-                     sendMessageToAll();
+                    sendMessageToAll();
+                    rooms.remove(i);
+                } else if (gameResponse.isDraw()) {
+                    sendMessageToAll();
                     rooms.remove(i);
                 }
             }
@@ -363,7 +330,6 @@ class ChatHandler extends Thread {
     }
 
     void sendMsg(String username, String gameResponseJson) {
-        System.out.println("are you getting called");
         for (ChatHandler ch : clientsArrayList) {
             if (ch.userName.equals(username)) {
                 ch.ps.println("update game");
@@ -387,7 +353,6 @@ class ChatHandler extends Thread {
             if (stringArr[i][0].equals(stringArr[i][1])
                     && stringArr[i][0].equals(stringArr[i][2])
                     && !stringArr[i][0].isEmpty()) {
-                System.out.println("player:" + stringArr[i][0] + "won");
                 won = true;
             }
         }
@@ -396,7 +361,6 @@ class ChatHandler extends Thread {
             if (stringArr[0][i].equals(stringArr[1][i])
                     && stringArr[0][i].equals(stringArr[2][i])
                     && !stringArr[0][i].isEmpty()) {
-                System.out.println("player:" + stringArr[i][0] + "won");
                 won = true;
 
             }
@@ -404,12 +368,10 @@ class ChatHandler extends Thread {
         //diagonal
         if (stringArr[0][0].equals(stringArr[1][1])
                 && stringArr[0][0].equals(stringArr[2][2]) && !stringArr[0][0].isEmpty()) {
-            System.out.println("player:" + stringArr[0][0] + "won");
             won = true;
         }
         if (stringArr[0][2].equals(stringArr[1][1])
                 && stringArr[0][2].equals(stringArr[2][0]) && !stringArr[0][2].isEmpty()) {
-            System.out.println("player:" + stringArr[0][0] + "won");
             won = true;
 
         }
@@ -427,7 +389,6 @@ class ChatHandler extends Thread {
             }
         }
 
-        System.out.println("test");
         return true;
     }
 
