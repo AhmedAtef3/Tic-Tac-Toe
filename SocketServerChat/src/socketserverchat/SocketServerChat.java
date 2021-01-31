@@ -261,6 +261,10 @@ class ChatHandler extends Thread {
                         optionFlag = "";
                     } else if (str.equals("reset game")) {
                         DbTask.saveMap(null, this.userName);
+                    }else if(str.equals("resume play")){
+                        this.ps.println("resume-game-play");
+                        this.ps.println(DbTask.getMap(this.userName));
+                        System.out.println("current db map for"+this.userName+":"+DbTask.getMap(this.userName));
                     }
                 }
 
