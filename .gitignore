@@ -21,14 +21,20 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-/SocketServerChat/nbproject
+
 /TicTacToe/nbproject
+/TicTacToe/build.xml
+/TicTacToe/manifest.mf
+/TicTacToe/*.iml
+/TicTacToe/out
+/TicTacToe/dist/
+/TicTacToe/out/
+/SocketServerChat/nbproject
 /SocketServerChat/build/
 /SocketServerChat/dist/
 /TicTacToe/build/
-/TicTacToe/dist/
 /SocketServerChat/build.xml
 /SocketServerChat/manifest.mf
-/TicTacToe/build.xml
-/TicTacToe/manifest.mf
+/SocketServerChat/*.iml
+/SocketServerChat/out/
 
