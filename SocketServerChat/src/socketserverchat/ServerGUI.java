@@ -52,6 +52,7 @@ public class ServerGUI extends Application {
     private SocketServerChat startServer;
     Thread updatePlayerThread;
     ListView<String> listView;
+     boolean isStarted = false;
 
     @Override
     public void init() {
@@ -214,12 +215,7 @@ class ServerSocketThread extends Thread {
 
     @Override
     public void run() {
-        try {
-
-            startServer = new SocketServerChat();
-        } catch (IOException ex) {
-            Logger.getLogger(ServerSocketThread.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        startServer = new SocketServerChat();
     }
 }
 

@@ -67,12 +67,24 @@ public class SocketServerChat {
         ChatHandler.resumeAll();
     }
 
-    public SocketServerChat() throws IOException {
-        serverSocket = new ServerSocket(5005);
+    public SocketServerChat() {
+        try {
+            serverSocket = new ServerSocket(5005);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketServerChat.class.getName()).log(Level.SEVERE, null, ex);
+        }
         while (true) {
-            if (! serverSocket.isClosed()) {
-                Socket s = serverSocket.accept();
-                chatHandler = new ChatHandler(s);
+            if (!serverSocket.isClosed()) {
+                Socket s;
+                try {
+                        s = serverSocket.accept();
+                        chatHandler = new ChatHandler(s);
+                } catch (IOException ex) {
+                    String message = ex.getMessage();
+                    System.out.println(message);
+                    
+                }
+
             }
         }
     }
