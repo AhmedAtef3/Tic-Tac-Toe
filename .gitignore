@@ -37,4 +37,5 @@ hs_err_pid*
 /SocketServerChat/manifest.mf
 /SocketServerChat/*.iml
 /SocketServerChat/out/
-
+SocketServerChat/.idea/
+TicTacToe/.idea/
