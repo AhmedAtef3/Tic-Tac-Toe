@@ -304,7 +304,6 @@ public class ChatRoom extends Application {
                                             }
 
                                             playerComboBox.setValue("please choose one player");
-
                                             // Set the CellFactory property
                                             playerComboBox.setCellFactory(new ShapeCellFactory());
                                             // Set the ButtonCell property
@@ -1031,7 +1030,6 @@ public class ChatRoom extends Application {
         System.out.println("test");
         return true;
     }
-
 }
 //To edit combobox shape
 

@@ -32,8 +32,11 @@ public class DbTask {
             //String user = "atef";
             //String password = "Iwasbornin1998$";
             // con = DriverManager.getConnection(url, user, password);
-            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/game?user=root&password=5655817");
-
+            if(con == null)
+            {
+            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/game?user=atef&password=Iwasbornin1998$");
+            }
+            
         } catch (Exception e) {
             System.out.println("not connected");
         }
@@ -123,6 +126,8 @@ public class DbTask {
     }
      
     public static ArrayList<Player> getAll(String username) {
+        defineConnection();
+        System.out.println("my connection : "+con);
         //System.out.println("getAll "+id);
         ResultSet resultSet = null;
         ArrayList<Player> players = new ArrayList<>();
