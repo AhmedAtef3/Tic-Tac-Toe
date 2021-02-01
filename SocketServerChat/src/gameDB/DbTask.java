@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +32,14 @@ public class DbTask {
             //String password = "Iwasbornin1998$";
             // con = DriverManager.getConnection(url, user, password);
             if (con == null) {
-                con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/game?user=atef&password=Iwasbornin1998$");
+                con = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/game?createDatabaseIfNotExist=true&user=ateef&password=p@ssword");
+                Statement stmt = con.createStatement();
+                stmt.execute("CREATE TABLE IF NOT EXISTS players"
+                        + "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) NOT NULL UNIQUE KEY, "+
+                        "password VARCHAR(255) NOT NULL, points INT NOT NULL, flag int NOT NULL, " + 
+                        "nickname VARCHAR(255) NOT NULL, map VARCHAR(255))" + 
+                        "ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8");
+                stmt.close();
             }
 
         } catch (Exception e) {
