@@ -15,4 +15,37 @@ or if you forked this project to your own repo run git clone  YourRepoName
  to your pc 
  Then enjoy with our lovely application 
 
- ![picture](download.png)
+first we have to run the server application 
+it will display to us the list of all players in our system and the  open , clost buttons to open the server or close it 
+ ![picture](openServer.png)
+ 
+ 
+ So we have to open the server for let the players able to play our game 
+ 
+ ![picture](loginPage.png)
+ 
+ If our player has account like mahmoud or nada he/she will be able to login other wise he/she will register to our game
+ 
+ 
+ the first player entered our game using login 
+ 
+ 
+ but there is no online player to play with
+ 
+ 
+ another player registered to our system 
+ 
+ 
+ the two players now are online to each other 
+ 
+ 
+ 
+ one can request the other one to play with 
+ 
+ 
+ the other one can accept or reject the request 
+ 
+ 
+ 
+ if he accepted the request they will enter the room  (which they can play or chat together in )
+ 
