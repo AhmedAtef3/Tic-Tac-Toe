@@ -320,7 +320,6 @@ public class ChatRoom extends Application {
                             else if(flagName.equals("myPoints"))
                             {
                                 myScore= Integer.valueOf(str);
-                                System.out.println("are you here???"+myScore);
                                Platform.runLater(new Runnable() {
                                    @Override
                                    public void run() {
