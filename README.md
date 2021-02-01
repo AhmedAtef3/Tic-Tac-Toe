@@ -41,3 +41,11 @@ it will display to us the list of all players in our system and the  open , clos
   ![picture](7.png)
  (which they can play or chat together in )
    ![picture](8.png)
+   
+## contributors
+ + Hatem Hashem
+ + Ahmed Atef
+ + Mahmoud Atef
+ + Leena Sherif
+ + Hossam Mohamed
+ + Mai Maher
