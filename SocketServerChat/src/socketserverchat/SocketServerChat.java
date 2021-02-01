@@ -77,12 +77,12 @@ public class SocketServerChat {
             if (!serverSocket.isClosed()) {
                 Socket s;
                 try {
-                        s = serverSocket.accept();
-                        chatHandler = new ChatHandler(s);
+                    s = serverSocket.accept();
+                    chatHandler = new ChatHandler(s);
                 } catch (IOException ex) {
                     String message = ex.getMessage();
                     System.out.println(message);
-                    
+
                 }
 
             }
@@ -149,10 +149,10 @@ class ChatHandler extends Thread {
         if (ChatHandler.checkExistence(p.getUsername())) {
             sendSelfMessage("login failed");
         } else {
+            sendSelfMessageWithFlag("myPoints", String.valueOf(p.getPoints()));
             sendAllPlayers(p.getUsername(), "login successfully");
             SocketServerChat.allPlayers = DbTask.getAll("");
             SocketServerChat.isUpdatedUser = true;
-
         }
     }
 
@@ -195,7 +195,7 @@ class ChatHandler extends Thread {
                         if (p != null) {
                             int idNumber = DbTask.register(p);
                             if (idNumber != -1) {
-
+                                // System.out.println(p.getUsername() + " , " + p.getPoints());
                                 sendAllPlayers(p.getUsername(), "registered successfully");
                                 this.ps.println("myName");
                                 this.ps.println(this.userName);

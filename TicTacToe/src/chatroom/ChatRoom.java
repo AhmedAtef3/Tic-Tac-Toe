@@ -154,6 +154,7 @@ public class ChatRoom extends Application {
     private String myUserName;
     private boolean playWithBot;
     private boolean resumeGame;
+    private int myScore = 0 ;
 
     @Override
     public void start(Stage primaryStage) {
@@ -362,6 +363,17 @@ public class ChatRoom extends Application {
                                 });
 
                                 flagName = "";
+                            }
+                            else if(str.equals("myPoints"))
+                            {
+                                flagName = "myPoints";
+                            }
+                            else if(flagName.equals("myPoints"))
+                            {
+                                myScore= Integer.valueOf(str);
+                                System.out.println("my score is "+ myScore );
+                                
+                            flagName="";
                             }
 
                         } else {
@@ -584,7 +596,7 @@ public class ChatRoom extends Application {
 
         });
 
-        Label headerLabel = new Label("Welcome To The Game");
+        Label headerLabel = new Label("Welcome To The Game , Your socre now is  " + myScore+" ");
         headerLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 20));
         GridPane.setHalignment(headerLabel, HPos.CENTER);
         headerLabel.setId("main-title");
