@@ -108,7 +108,7 @@ public class ChatRoom extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        primaryStage.setTitle("My chat room!");
+        primaryStage.setTitle("Tic Tac Toe");
 
         //primaryStage.setScene(scene);
         scene = new Scene(login(), 800, 500);
