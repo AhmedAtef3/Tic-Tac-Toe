@@ -36,6 +36,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -62,7 +63,6 @@ public class ServerGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        Label label = new Label("Educational qualification:");
 
         listView = new ListView<String>();
 
@@ -70,7 +70,7 @@ public class ServerGUI extends Application {
         //Creating the layout
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(5, 5, 5, 50));
-        layout.getChildren().addAll(label, listView);
+        layout.getChildren().addAll(listView);
 
         //Setting the stage
         Timer timer = new Timer();
@@ -164,13 +164,18 @@ public class ServerGUI extends Application {
                 SocketServerChat.stopServerSocket();
             }
         });
+        
+        Label playersListLabel = new Label("List of players");
+        playersListLabel.setId("main-title");
+        BorderPane.setAlignment(playersListLabel, Pos.CENTER_RIGHT);
+        BorderPane.setMargin(playersListLabel, new Insets(5, 17, 5, 17));
 
+        root.setTop(playersListLabel);
         root.setCenter(buttons);
         root.setRight(layout);
         Scene scene = new Scene(root, 800, 500);
         scene.getStylesheets().addAll(this.getClass().getResource("serverstyle.css").toExternalForm());
 
-//        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
 
