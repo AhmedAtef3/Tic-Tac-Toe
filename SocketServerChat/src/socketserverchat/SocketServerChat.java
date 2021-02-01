@@ -195,7 +195,6 @@ class ChatHandler extends Thread {
                         if (p != null) {
                             int idNumber = DbTask.register(p);
                             if (idNumber != -1) {
-                                // System.out.println(p.getUsername() + " , " + p.getPoints());
                                 sendAllPlayers(p.getUsername(), "registered successfully");
                                 this.ps.println("myName");
                                 this.ps.println(this.userName);
@@ -253,6 +252,23 @@ class ChatHandler extends Thread {
                     } else if (str.equals("resume play")) {
                         this.ps.println("resume-game-play");
                         this.ps.println(DbTask.getMap(this.userName));
+                    }else if(str.equals("back")){
+                        Room roomToRemove=null;
+                        for(Room currentRoom:rooms){
+                            if(currentRoom.getPlayer1().equals(this.userName)||currentRoom.getPlayer2().equals(this.userName)){
+                                if(currentRoom.getPlayer1().equals(this.userName)){
+                                    DbTask.updateScore(currentRoom.getPlayer2());
+                                }else {
+                                    DbTask.updateScore(currentRoom.getPlayer1());
+                                }
+                                sendMessageToPlayer(currentRoom.getPlayer1(),"back-pressed");
+                                sendMessageToPlayer(currentRoom.getPlayer2(),"back-pressed");
+                                roomToRemove=currentRoom;
+                            }
+                        }
+                        if(roomToRemove!=null){
+                            rooms.remove(roomToRemove);
+                        }
                     }
                 }
 

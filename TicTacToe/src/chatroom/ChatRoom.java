@@ -10,111 +10,59 @@ import chatroom.Classes.GameResponse;
 import chatroom.Classes.MyMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.io.BufferedReader;
+
 import java.io.DataInputStream;
 import chatroom.Classes.Player;
-import java.io.FileReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import java.lang.reflect.Type;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Random;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import chatroom.Classes.Player;
 
 /**
  *
  * @author atef
  */
-import chatroom.Classes.Player;
-import com.google.gson.Gson;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.net.Socket;
-import java.sql.SQLException;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import javax.xml.bind.DatatypeConverter;
 
 /**
  *
@@ -144,7 +92,7 @@ public class ChatRoom extends Application {
     Label labelTrial2;
     GridPane gridPanes;
     private BorderPane borderPane;
-    private Button exitButton;
+    private Button backToMenuButton;
     private GridPane gridPane;
     private Cell[][] board = new Cell[3][3];
     private String map[][];
@@ -371,12 +319,23 @@ public class ChatRoom extends Application {
                             else if(flagName.equals("myPoints"))
                             {
                                 myScore= Integer.valueOf(str);
-                                System.out.println("my score is "+ myScore );
                                 
                             flagName="";
-                            }
+                            }else if(str.equals("back-pressed")){
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Alert alertActive = new Alert(AlertType.ERROR);
+                                        alertActive.setTitle("player left");
+                                        alertActive.setHeaderText("a player has left the game!");
+                                        alertActive.showAndWait();
+                                        turn = "o";
+                                        isX = false;
+                                        backToMenuButton.getScene().setRoot(mainPage());
 
-                        } else {
+                                    }
+                                });
+                            }
 
                         }
                     } catch (IOException ex) {
@@ -702,9 +661,9 @@ public class ChatRoom extends Application {
         Button sendButton = new Button("send");
         sendButton.setPrefWidth(50);
         sendButton.setId("buttons2");
-        exitButton = new Button("exit");
-        exitButton.setPrefWidth(50);
-        exitButton.setId("buttons2");
+        backToMenuButton = new Button("back");
+        backToMenuButton.setPrefWidth(50);
+        backToMenuButton.setId("buttons2");
 
         sendButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -717,13 +676,12 @@ public class ChatRoom extends Application {
             }
         });
 
-        exitButton.setOnAction(new EventHandler<ActionEvent>() {
+        backToMenuButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
                 if (playWithBot == false) {
-                    ps.println("exit");
-                    System.exit(0);
+                    ps.println("back");;
                 } else {
                     resumeGame = false;
                     playWithBot = false;
@@ -734,7 +692,7 @@ public class ChatRoom extends Application {
                     String myMap = gson.toJson(cellValues(), String[][].class);
                     ps.println(myMap);
                     map = null;
-                    exitButton.getScene().setRoot(mainPage());
+                    backToMenuButton.getScene().setRoot(mainPage());
 
                 }
 
@@ -744,9 +702,9 @@ public class ChatRoom extends Application {
         Insets insets = new Insets(20);
         HBox hBox;
         if (!playWithBot) {
-            hBox = new HBox(10, textField, sendButton, exitButton);
+            hBox = new HBox(10, textField, sendButton, backToMenuButton);
         } else {
-            hBox = new HBox(10, exitButton);
+            hBox = new HBox(10, backToMenuButton);
         }
         BorderPane root = new BorderPane();
         if (!playWithBot) {
@@ -854,7 +812,7 @@ public class ChatRoom extends Application {
                 gameEndAlert.showAndWait();
                 turn = "o";
                 isX = false;
-                exitButton.getScene().setRoot(mainPage());
+                backToMenuButton.getScene().setRoot(mainPage());
 
             }
         });
@@ -880,7 +838,7 @@ public class ChatRoom extends Application {
                 gameEndAlert.showAndWait();
                 turn = "o";
                 isX = false;
-                exitButton.getScene().setRoot(mainPage());
+                backToMenuButton.getScene().setRoot(mainPage());
 
             }
 

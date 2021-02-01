@@ -32,7 +32,7 @@ public class DbTask {
             //String password = "Iwasbornin1998$";
             // con = DriverManager.getConnection(url, user, password);
             if (con == null) {
-                con = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/game?createDatabaseIfNotExist=true&user=ateef&password=p@ssword");
+                con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/game?createDatabaseIfNotExist=true&user=root&password=5655817");
                 Statement stmt = con.createStatement();
                 stmt.execute("CREATE TABLE IF NOT EXISTS players"
                         + "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) NOT NULL UNIQUE KEY, "+
