@@ -194,6 +194,7 @@ public class ChatRoom extends Application {
                     String str = null;
                     try {
                         str = dis.readLine();
+                        System.out.println(str);
                         if (str != null) {
 
                             if (str.equals("registration failed")) {
@@ -374,9 +375,22 @@ public class ChatRoom extends Application {
                                 System.out.println("my score is "+ myScore );
                                 
                             flagName="";
-                            }
+                            }else if(str.equals("back-pressed")){
+                                System.out.println("why are you not here");
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Alert alertActive = new Alert(AlertType.ERROR);
+                                        alertActive.setTitle("Error Message");
+                                        alertActive.setHeaderText("your opponent has left the game!");
+                                        alertActive.showAndWait();
+                                        turn = "o";
+                                        isX = false;
+                                        exitButton.getScene().setRoot(mainPage());
 
-                        } else {
+                                    }
+                                });
+                            }
 
                         }
                     } catch (IOException ex) {
@@ -722,8 +736,9 @@ public class ChatRoom extends Application {
             @Override
             public void handle(ActionEvent event) {
                 if (playWithBot == false) {
-                    ps.println("exit");
-                    System.exit(0);
+                    System.out.println("whyy???");
+                    ps.println("back");
+                    //System.exit(0);
                 } else {
                     resumeGame = false;
                     playWithBot = false;

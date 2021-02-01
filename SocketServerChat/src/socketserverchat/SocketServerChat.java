@@ -175,6 +175,7 @@ class ChatHandler extends Thread {
             String str = null;
             try {
                 str = dis.readLine();
+                System.out.println(str);
                 if (str != null) {
                     if (optionFlag.equals("chat")) {
                         sendMessageToPlayer(str, "request chat");
@@ -253,6 +254,24 @@ class ChatHandler extends Thread {
                     } else if (str.equals("resume play")) {
                         this.ps.println("resume-game-play");
                         this.ps.println(DbTask.getMap(this.userName));
+                    }else if(str.equals("back")){
+                        System.out.println("back is pressed");
+                        Room roomToRemove=null;
+                        for(Room currentRoom:rooms){
+                            if(currentRoom.getPlayer1().equals(this.userName)||currentRoom.getPlayer2().equals(this.userName)){
+                                if(currentRoom.getPlayer1().equals(this.userName)){
+                                    DbTask.updateScore(currentRoom.getPlayer2());
+                                }else {
+                                    DbTask.updateScore(currentRoom.getPlayer1());
+                                }
+                                sendMessageToPlayer(currentRoom.getPlayer1(),"back-pressed");
+                                sendMessageToPlayer(currentRoom.getPlayer2(),"back-pressed");
+                                roomToRemove=currentRoom;
+                            }
+                        }
+                        if(roomToRemove!=null){
+                            rooms.remove(roomToRemove);
+                        }
                     }
                 }
 
