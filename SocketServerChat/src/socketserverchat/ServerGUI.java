@@ -64,8 +64,6 @@ public class ServerGUI extends Application {
 
         Label label = new Label("Educational qualification:");
 
-        //list View for educational qualification
-        //  ObservableList<String> names = FXCollections.observableArrayList("Engineering", "MCA", "MBA", "Graduation", "MTECH", "Mphil", "Phd");
         listView = new ListView<String>();
 
         listView.setPrefSize(200, 520);
