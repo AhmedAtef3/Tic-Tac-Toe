@@ -15,4 +15,4 @@ or if you forked this project to your own repo run git clone  YourRepoName
  to your pc 
  Then enjoy with our lovely application 
 
- [picture](download.png =250x250 )
+ ![picture](download.png=250x250)
