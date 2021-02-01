@@ -38,6 +38,6 @@ it will display to us the list of all players in our system and the  open , clos
  ![picture](6.png)
  
  if he accepted the request they will enter the room  
-  ![picture](7.png)
+ ![picture](7.png)
  (which they can play or chat together in )
-   ![picture](8.png)
+ ![picture](8.png)
