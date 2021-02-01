@@ -596,10 +596,13 @@ public class ChatRoom extends Application {
 
         });
 
-        Label headerLabel = new Label("Welcome To The Game , Your socre now is  " + myScore+" ");
+        Label headerLabel = new Label("Welcome To The Game");
+        Label scoreLabel = new Label("Score " + myScore);
         headerLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 20));
+        scoreLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 1));
         GridPane.setHalignment(headerLabel, HPos.CENTER);
         headerLabel.setId("main-title");
+        scoreLabel.setId("submain-title");
 
         // radio button
         ToggleGroup radioGroup = new ToggleGroup();
@@ -663,10 +666,11 @@ public class ChatRoom extends Application {
         alertLabel.setVisible(false);
 
         grid.add(headerLabel, 2, 2);
+        grid.add(scoreLabel, 2, 4);
         grid.add(playerComboBox, 2, 10);
-        grid.add(hbox, 2, 6);
-        grid.add(playButton, 10, 20);
-        grid.add(alertLabel, 10, 50);
+        grid.add(hbox, 2, 8);
+        grid.add(playButton, 10, 22);
+        grid.add(alertLabel, 10, 52);
 
         return grid;
 
