@@ -344,8 +344,26 @@ class ChatHandler extends Thread {
                     if (winner.equals("x")) {
                         DbTask.updateScore(rooms.get(i).getPlayer2());
 
+                        for (ChatHandler ch : clientsArrayList) {
+                            if (ch.userName.equals(rooms.get(i).getPlayer2())) {
+                                ch.ps.println("myPoints");
+                               int score= DbTask.getScore(rooms.get(i).getPlayer2());
+                                System.out.println("player 2 new score"+score);
+                                ch.ps.println(score);
+                            }
+                        }
+
+
                     } else {
                         DbTask.updateScore(rooms.get(i).getPlayer1());
+                        for (ChatHandler ch : clientsArrayList) {
+                            if (ch.userName.equals(rooms.get(i).getPlayer1())) {
+                                ch.ps.println("myPoints");
+                                int score= DbTask.getScore(rooms.get(i).getPlayer1());
+                                System.out.println("player 1new score"+score);
+                                ch.ps.println(score);
+                            }
+                        }
                     }
                     sendMessageToAll();
                     rooms.remove(i);
