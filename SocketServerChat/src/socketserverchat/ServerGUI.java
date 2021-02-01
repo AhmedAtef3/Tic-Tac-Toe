@@ -62,7 +62,8 @@ public class ServerGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
+        
+        primaryStage.setTitle("Server");
 
         listView = new ListView<String>();
 
