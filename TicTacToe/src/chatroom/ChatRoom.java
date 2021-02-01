@@ -102,6 +102,7 @@ public class ChatRoom extends Application {
     private String myUserName;
     private boolean playWithBot;
     private boolean resumeGame;
+    private Label scoreLabel;
     private int myScore = 0 ;
 
     @Override
@@ -319,6 +320,15 @@ public class ChatRoom extends Application {
                             else if(flagName.equals("myPoints"))
                             {
                                 myScore= Integer.valueOf(str);
+                                System.out.println("are you here???"+myScore);
+                               Platform.runLater(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       if(scoreLabel!=null) {
+                                           scoreLabel.setText("points:" + myScore);
+                                       }
+                                   }
+                               });
                                 
                             flagName="";
                             }else if(str.equals("back-pressed")){
@@ -556,7 +566,7 @@ public class ChatRoom extends Application {
         });
 
         Label headerLabel = new Label("Welcome To The Game");
-        Label scoreLabel = new Label("Score " + myScore);
+         scoreLabel = new Label("Score " + myScore);
         headerLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 20));
         scoreLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 1));
         GridPane.setHalignment(headerLabel, HPos.CENTER);

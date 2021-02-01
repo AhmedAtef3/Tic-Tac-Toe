@@ -198,5 +198,20 @@ public class DbTask {
         }
         return map;
     }
+    public static int getScore(String userName){
+        String sql = "SELECT points FROM players WHERE username = ?";
+        int score = -1;
+        try (
+                PreparedStatement pstmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
+            pstmt.setString(1, userName);
+
+            ResultSet resultSet = pstmt.executeQuery();
+            if (resultSet.next()) {
+                score = resultSet.getInt("points");
+            }
+        } catch (SQLException e) {
+        }
+        return score;
+    }
 
 }
